@@ -1,6 +1,7 @@
-package kr.adapterz.community.post;
+package kr.adapterz.community.post.domain;
 
 import jakarta.persistence.*;
+import kr.adapterz.community.user.User;
 import lombok.Getter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -9,18 +10,23 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Table(name = "post_image")
-public class PostImage {
+@Table(name = "post_comment")
+public class PostComment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 
-    @Column(name = "post_image_url", nullable = false, length = 2048)
-    private String postImageUrl;
+    @Lob
+    @Column(name = "body", nullable = false)
+    private String body;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -31,4 +37,5 @@ public class PostImage {
     private LocalDateTime updatedAt;
 
     @Column(name = "deleted_at")
-    private LocalDateTime deletedAt;}
+    private LocalDateTime deletedAt;
+}

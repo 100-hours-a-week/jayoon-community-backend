@@ -1,4 +1,4 @@
-package kr.adapterz.community.post;
+package kr.adapterz.community.post.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

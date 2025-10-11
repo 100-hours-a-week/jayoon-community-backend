@@ -1,4 +1,4 @@
-package kr.adapterz.community.post;
+package kr.adapterz.community.post.domain;
 
 import jakarta.persistence.*;
 import kr.adapterz.community.user.User;
