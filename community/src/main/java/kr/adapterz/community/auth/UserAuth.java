@@ -1,6 +1,7 @@
-package kr.adapterz.community.user;
+package kr.adapterz.community.auth;
 
 import jakarta.persistence.*;
+import kr.adapterz.community.user.User;
 import lombok.Getter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;

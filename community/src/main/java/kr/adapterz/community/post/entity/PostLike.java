@@ -1,4 +1,4 @@
-package kr.adapterz.community.post.domain;
+package kr.adapterz.community.post.entity;
 
 import jakarta.persistence.*;
 import kr.adapterz.community.user.User;
@@ -19,7 +19,7 @@ public class PostLike {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @MapsId("postId") // PostLikeId의 postId 필드에 매핑
+    @MapsId("postId")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
