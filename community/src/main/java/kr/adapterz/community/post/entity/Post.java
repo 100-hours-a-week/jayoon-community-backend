@@ -3,10 +3,7 @@ package kr.adapterz.community.post.entity;
 import jakarta.persistence.*;
 import kr.adapterz.community.post.dto.CreatePostRequest;
 import kr.adapterz.community.user.User;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -44,7 +41,7 @@ public class Post {
 
     @Column(name = "comment_count", nullable = false, columnDefinition = "int unsigned")
     @ColumnDefault("0")
-    private Long commentCount;
+    private Long commentCount = 0L;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -64,6 +61,9 @@ public class Post {
                 .user(user)
                 .title(request.title())
                 .body(request.body())
+                .viewCount(0L)
+                .likeCount(0L)
+                .commentCount(0L)
                 .build();
     }
 }
