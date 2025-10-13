@@ -13,14 +13,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
+    private final UserService userService;
 
     public PostResponse createPost(CreatePostRequest request) {
-        // 더미 데이터
+        // ToDo: 인가 구현 후 변경
         Long userId = 1L;
-        String nickname = "jayoon";
-        String profileImageUrl = "profileImageUrl";
-
-        User user = new User(userId, nickname, profileImageUrl);
+        User user = userService.findById(userId);
         Post newPost = Post.createFrom(user, request);
 
         Post savedPost = postRepository.save(newPost);
