@@ -1,7 +1,10 @@
 package kr.adapterz.community.post.entity;
 
 import jakarta.persistence.*;
+import kr.adapterz.community.post.dto.CreatePostRequest;
 import kr.adapterz.community.user.User;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
@@ -11,7 +14,9 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
+@Builder
 @Getter @Setter
+@AllArgsConstructor
 @Table(name = "post")
 public class Post {
     @Id
@@ -31,15 +36,15 @@ public class Post {
 
     @Column(name = "view_count", nullable = false)
     @ColumnDefault("0")
-    private Long viewCount = 0L;
+    private Long viewCount;
 
     @Column(name = "like_count", nullable = false, columnDefinition = "int unsigned")
     @ColumnDefault("0")
-    private Long likeCount = 0L;
+    private Long likeCount;
 
     @Column(name = "comment_count", nullable = false, columnDefinition = "int unsigned")
     @ColumnDefault("0")
-    private Long commentCount = 0L;
+    private Long commentCount;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -54,9 +59,11 @@ public class Post {
 
     protected Post() {}
 
-    public Post(User user, String title, String body) {
-        this.user = user;
-        this.title = title;
-        this.body = body;
+    public static Post createFrom(User user, CreatePostRequest request) {
+        return Post.builder()
+                .user(user)
+                .title(request.title())
+                .body(request.body())
+                .build();
     }
 }
