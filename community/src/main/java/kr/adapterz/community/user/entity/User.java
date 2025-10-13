@@ -1,8 +1,8 @@
-package kr.adapterz.community.user;
+package kr.adapterz.community.user.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import kr.adapterz.community.user.dto.CreateUserRequest;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter @Setter
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Table(name = "user")
 public class User {
     @Id
@@ -35,8 +37,10 @@ public class User {
 
     protected User() {}
 
-    public User(String nickname, String profileImageUrl) {
-        this.nickname = nickname;
-        this.profileImageUrl = profileImageUrl;
+    public static User from(CreateUserRequest req) {
+        return User.builder()
+                .nickname(req.nickname())
+                .profileImageUrl(req.profileImageUrl())
+                .build();
     }
 }

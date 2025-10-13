@@ -1,20 +1,25 @@
-package kr.adapterz.community.auth;
+package kr.adapterz.community.user.entity;
 
 import jakarta.persistence.*;
-import kr.adapterz.community.user.User;
-import lombok.Getter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
+/**
+ * @MapsId는 @Id를 사용한 필드인 userId가 자동으로 user의 id로 초기화 되도록 합니다.
+ */
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "user_auth")
 public class UserAuth {
     @Id
     @Column(name = "user_id")
-    private Long userId;
+    private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId
@@ -38,11 +43,11 @@ public class UserAuth {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
-    protected UserAuth() {}
-
-    public UserAuth(User user, String email, String passwordHash) {
-        this.user = user;
-        this.email = email;
-        this.passwordHash = passwordHash;
+    public static UserAuth of(User user, String email, String passwordHash) {
+        return UserAuth.builder()
+                .user(user)
+                .email(email)
+                .passwordHash(passwordHash)
+                .build();
     }
 }

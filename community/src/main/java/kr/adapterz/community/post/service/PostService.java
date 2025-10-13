@@ -4,7 +4,8 @@ import kr.adapterz.community.post.dto.CreatePostRequest;
 import kr.adapterz.community.post.dto.PostResponse;
 import kr.adapterz.community.post.entity.Post;
 import kr.adapterz.community.post.repository.PostRepository;
-import kr.adapterz.community.user.User;
+import kr.adapterz.community.user.entity.User;
+import kr.adapterz.community.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -2,7 +2,7 @@ package kr.adapterz.community.post.entity;
 
 import jakarta.persistence.*;
 import kr.adapterz.community.post.dto.CreatePostRequest;
-import kr.adapterz.community.user.User;
+import kr.adapterz.community.user.entity.User;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
@@ -41,7 +41,7 @@ public class Post {
 
     @Column(name = "comment_count", nullable = false, columnDefinition = "int unsigned")
     @ColumnDefault("0")
-    private Long commentCount = 0L;
+    private Long commentCount;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
