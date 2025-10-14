@@ -1,5 +1,6 @@
 package kr.adapterz.community.user.service;
 
+import kr.adapterz.community.auth.Encoder;
 import kr.adapterz.community.user.dto.CreateUserRequest;
 import kr.adapterz.community.user.dto.UserResponse;
 import kr.adapterz.community.user.entity.User;
@@ -16,6 +17,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserAuthRepository userAuthRepository;
+    private final Encoder encoder;
 
     /**
      * 유저를 생성합니다.
@@ -32,9 +34,7 @@ public class UserService {
         User newUser = User.from(request);
         User savedUser = userRepository.save(newUser);
 
-        // ToDo: bcrypt 해싱
-//        String passwordHash = bcryptManager.hash();
-        String passwordHash = "hashing password";
+        String passwordHash = encoder.encodePassword(request.password());
         UserAuth newUserAuth = UserAuth.of(
                 savedUser,
                 request.email(),
