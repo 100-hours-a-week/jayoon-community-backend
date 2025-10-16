@@ -1,4 +1,4 @@
-package kr.adapterz.community.config;
+package kr.adapterz.community.common.config;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
