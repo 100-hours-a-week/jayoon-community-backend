@@ -20,28 +20,4 @@ public class PostController {
         PostResponse newPost = postService.createPost(request);
         return new ResponseEntity<>(newPost, HttpStatus.OK);
     }
-
-//    @GetMapping
-//    public ResponseEntity<List<PostResponse>> getPosts() {
-//        List<PostResponse> posts = postService.findAllPosts();
-//        return ResponseEntity.ok(posts);
-//    }
-//
-//    @GetMapping("/{postId}")
-//    public ResponseEntity<PostResponse> getPost(@PathVariable Long postId) {
-//        PostResponse post = postService.findPostById(postId);
-//        return ResponseEntity.ok(post);
-//    }
-//
-//    @PutMapping("/{postId}")
-//    public ResponseEntity<PostResponse> updatePost(@PathVariable Long postId, @RequestBody PostUpdateRequest request) {
-//        PostResponse updatedPost = postService.updatePost(postId, request);
-//        return ResponseEntity.ok(updatedPost);
-//    }
-//
-//    @DeleteMapping("/{postId}")
-//    public ResponseEntity<Void> deletePost(@PathVariable Long postId) {
-//        postService.deletePost(postId);
-//        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//    }
 }
