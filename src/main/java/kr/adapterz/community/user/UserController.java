@@ -1,5 +1,6 @@
 package kr.adapterz.community.user;
 
+import kr.adapterz.community.common.response.dto.ApiResponse;
 import kr.adapterz.community.user.dto.CreateUserRequest;
 import kr.adapterz.community.user.dto.UserResponse;
 import kr.adapterz.community.user.service.UserService;
@@ -19,8 +20,9 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<UserResponse> createUser(@RequestBody CreateUserRequest request) {
+    public ResponseEntity<ApiResponse<UserResponse>> createUser(@RequestBody CreateUserRequest request) {
         UserResponse newUser = userService.createUser(request);
-        return new ResponseEntity<>(newUser, HttpStatus.OK);
+        ApiResponse<UserResponse> responseBody = ApiResponse.success(newUser, "회원가입을 성공했습니다.");
+        return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 }
