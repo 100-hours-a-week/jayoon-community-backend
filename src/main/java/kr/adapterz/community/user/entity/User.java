@@ -1,15 +1,24 @@
 package kr.adapterz.community.user.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import kr.adapterz.community.user.dto.CreateUserRequest;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDateTime;
-
 @Entity
-@Getter @Setter
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Table(name = "user")
@@ -35,7 +44,8 @@ public class User {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
-    protected User() {}
+    protected User() {
+    }
 
     public static User from(CreateUserRequest req) {
         return User.builder()

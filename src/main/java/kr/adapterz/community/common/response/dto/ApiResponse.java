@@ -11,6 +11,7 @@ public record ApiResponse<T>(
 ) {
     /**
      * Controller 내에서 모든 로직 성공 시 응답하게 될 응답 객체입니다.
+     *
      * @param <T> 성공하더라도 불필요하면 null이 들어갈 수 있습니다.
      */
     public static <T> ApiResponse<T> success(T data, String message) {

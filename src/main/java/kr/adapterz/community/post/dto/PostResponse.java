@@ -1,10 +1,9 @@
 package kr.adapterz.community.post.dto;
 
-import kr.adapterz.community.post.entity.Post;
-import lombok.Builder;
-
 import java.time.LocalDateTime;
 import java.util.List;
+import kr.adapterz.community.post.entity.Post;
+import lombok.Builder;
 
 /**
  * 게시글 조회/생성/수정 후 클라이언트에 반환할 응답 데이터 레코드
@@ -30,7 +29,7 @@ public record PostResponse(
             Long id,
             String nickname
     ) {
-        public static UserResponse from(Long id,  String nickname) {
+        public static UserResponse from(Long id, String nickname) {
             return new UserResponse(id, nickname);
         }
     }

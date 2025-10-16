@@ -2,7 +2,7 @@ package kr.adapterz.community.common.response.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class ForbiddenException extends RuntimeException implements ErrorStatusCodeProvider{
+public class ForbiddenException extends RuntimeException implements ErrorStatusCodeProvider {
 
     /**
      * HTTP status code 403을 나타내는 예외입니다.
