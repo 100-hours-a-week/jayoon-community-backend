@@ -16,7 +16,6 @@ import kr.adapterz.community.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -24,7 +23,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Entity
 @Builder
 @Getter
-@Setter
 @AllArgsConstructor
 @Table(name = "post")
 public class Post {

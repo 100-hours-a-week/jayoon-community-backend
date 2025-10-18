@@ -12,13 +12,11 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Getter
-@Setter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Table(name = "user")
