@@ -1,5 +1,10 @@
 package kr.adapterz.community.user.service;
 
+import static kr.adapterz.community.common.ErrorCode.USER_AUTH_NOT_FOUND;
+import static kr.adapterz.community.common.ErrorCode.USER_EMAIL_ALREADY_EXISTED;
+import static kr.adapterz.community.common.ErrorCode.USER_NICKNAME_ALREADY_EXISTED;
+import static kr.adapterz.community.common.ErrorCode.USER_NOT_FOUND;
+
 import kr.adapterz.community.common.response.exception.BadRequestException;
 import kr.adapterz.community.common.response.exception.NotFoundException;
 import kr.adapterz.community.common.security.Encoder;
@@ -27,10 +32,10 @@ public class UserService {
     @Transactional
     public UserResponse createUser(CreateUserRequest request) {
         if (userAuthRepository.existsByEmail((request.email()))) {
-            throw new BadRequestException("이메일이 이미 존재합니다.");
+            throw new BadRequestException(USER_EMAIL_ALREADY_EXISTED);
         }
         if (userRepository.existsByNickname((request.nickname()))) {
-            throw new BadRequestException("닉네임이 이미 존재합니다.");
+            throw new BadRequestException(USER_NICKNAME_ALREADY_EXISTED);
         }
 
         User newUser = User.from(request);
@@ -52,9 +57,9 @@ public class UserService {
      */
     public UserResponse getUserInfoById(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("유저가 존재하지 않습니다."));
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
         UserAuth userAuth = userAuthRepository.findById(user.getId())
-                .orElseThrow(() -> new NotFoundException("유저 인증 정보가 존재하지 않습니다."));
+                .orElseThrow(() -> new NotFoundException(USER_AUTH_NOT_FOUND));
         return UserResponse.of(user, userAuth.getEmail());
     }
 
@@ -63,6 +68,6 @@ public class UserService {
      */
     public User findById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("유저가 존재하지 않습니다."));
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
     }
 }

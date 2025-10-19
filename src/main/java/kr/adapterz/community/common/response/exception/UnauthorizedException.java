@@ -1,5 +1,6 @@
 package kr.adapterz.community.common.response.exception;
 
+import kr.adapterz.community.common.ErrorCode;
 import org.springframework.http.HttpStatus;
 
 public class UnauthorizedException extends RuntimeException implements ErrorStatusCodeProvider {
@@ -8,8 +9,8 @@ public class UnauthorizedException extends RuntimeException implements ErrorStat
     /**
      * HTTP status code 401을 나타내는 예외입니다.
      */
-    public UnauthorizedException(String message) {
-        super(message);
+    public UnauthorizedException(ErrorCode message) {
+        super(message.getMessage());
     }
 
     @Override

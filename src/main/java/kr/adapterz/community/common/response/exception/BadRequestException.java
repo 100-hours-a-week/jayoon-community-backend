@@ -1,5 +1,6 @@
 package kr.adapterz.community.common.response.exception;
 
+import kr.adapterz.community.common.ErrorCode;
 import org.springframework.http.HttpStatus;
 
 public class BadRequestException extends RuntimeException implements ErrorStatusCodeProvider {
@@ -8,8 +9,8 @@ public class BadRequestException extends RuntimeException implements ErrorStatus
      * <p>
      * 현재 데이터 중복, 인자의 형식 잘못 등 기본적인 클라이언트 에러를 다루고 있습니다. 이후에 세분화 될 예정입니다.
      */
-    public BadRequestException(String message) {
-        super(message);
+    public BadRequestException(ErrorCode message) {
+        super(message.getMessage());
     }
 
     @Override
