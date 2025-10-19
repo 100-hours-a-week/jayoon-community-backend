@@ -1,6 +1,6 @@
 package kr.adapterz.community.common.response.exception;
 
-import kr.adapterz.community.common.response.dto.ApiResponse;
+import kr.adapterz.community.common.response.dto.ApiResponseDto;
 import kr.adapterz.community.common.response.dto.ErrorDetails;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +19,9 @@ public class GlobalExceptionHandler {
      * HTTP status code 400 예외를 일괄적으로 처리합니다.
      */
     @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<ApiResponse<Void>> handleBadRequestException(BadRequestException ex) {
+    public ResponseEntity<ApiResponseDto<Void>> handleBadRequestException(BadRequestException ex) {
         ErrorDetails errorDetails = ErrorDetails.of(ex.getHttpStatusValue());
-        ApiResponse<Void> response = ApiResponse.fail(errorDetails, ex.getMessage());
+        ApiResponseDto<Void> response = ApiResponseDto.fail(errorDetails, ex.getMessage());
         return new ResponseEntity<>(response, ex.getHttpStatus());
     }
 
@@ -29,9 +29,9 @@ public class GlobalExceptionHandler {
      * HTTP status code 404 예외를 일괄적으로 처리합니다.
      */
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ApiResponse<Void>> handleNotFoundException(NotFoundException ex) {
+    public ResponseEntity<ApiResponseDto<Void>> handleNotFoundException(NotFoundException ex) {
         ErrorDetails errorDetails = ErrorDetails.of(ex.getHttpStatusValue());
-        ApiResponse<Void> response = ApiResponse.fail(errorDetails, ex.getMessage());
+        ApiResponseDto<Void> response = ApiResponseDto.fail(errorDetails, ex.getMessage());
         return new ResponseEntity<>(response, ex.getHttpStatus());
     }
 
@@ -42,9 +42,9 @@ public class GlobalExceptionHandler {
      * 않았습니다.
      */
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<Void>> handleException(Exception ex) {
+    public ResponseEntity<ApiResponseDto<Void>> handleException(Exception ex) {
         ErrorDetails errorDetails = ErrorDetails.of(HttpStatus.INTERNAL_SERVER_ERROR.value());
-        ApiResponse<Void> response = ApiResponse.fail(errorDetails, ex.getMessage());
+        ApiResponseDto<Void> response = ApiResponseDto.fail(errorDetails, ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

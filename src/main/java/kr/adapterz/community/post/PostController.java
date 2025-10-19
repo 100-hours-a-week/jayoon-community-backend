@@ -1,6 +1,6 @@
 package kr.adapterz.community.post;
 
-import kr.adapterz.community.common.response.dto.ApiResponse;
+import kr.adapterz.community.common.response.dto.ApiResponseDto;
 import kr.adapterz.community.post.dto.CreatePostRequest;
 import kr.adapterz.community.post.dto.PostResponse;
 import kr.adapterz.community.post.service.PostService;
@@ -20,9 +20,9 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<PostResponse>> createPost(@RequestBody CreatePostRequest request) {
+    public ResponseEntity<ApiResponseDto<PostResponse>> createPost(@RequestBody CreatePostRequest request) {
         PostResponse newPost = postService.createPost(request);
-        ApiResponse<PostResponse> responseBody = ApiResponse.success(newPost, "게시글 작성을 성공했습니다.");
+        ApiResponseDto<PostResponse> responseBody = ApiResponseDto.success(newPost, "게시글 작성을 성공했습니다.");
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 
