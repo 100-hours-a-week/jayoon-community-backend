@@ -1,6 +1,6 @@
 package kr.adapterz.community.post;
 
-import kr.adapterz.community.common.response.dto.ApiResponseDto;
+import kr.adapterz.community.common.response.ApiResponseDto;
 import kr.adapterz.community.post.dto.CreatePostRequest;
 import kr.adapterz.community.post.dto.PostResponse;
 import kr.adapterz.community.post.service.PostService;

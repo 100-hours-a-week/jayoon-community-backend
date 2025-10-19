@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import kr.adapterz.community.auth.dto.LoginRequestDto;
 import kr.adapterz.community.auth.dto.LoginResponseDto;
 import kr.adapterz.community.auth.service.AuthService;
-import kr.adapterz.community.common.response.dto.ApiResponseDto;
+import kr.adapterz.community.common.response.ApiResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

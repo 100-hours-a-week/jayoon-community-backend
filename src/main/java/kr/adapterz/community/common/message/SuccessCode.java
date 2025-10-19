@@ -1,4 +1,4 @@
-package kr.adapterz.community.common;
+package kr.adapterz.community.common.message;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

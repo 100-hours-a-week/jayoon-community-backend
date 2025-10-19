@@ -1,7 +1,7 @@
-package kr.adapterz.community.common.response.exception;
+package kr.adapterz.community.common.exception;
 
-import kr.adapterz.community.common.response.dto.ApiResponseDto;
-import kr.adapterz.community.common.response.dto.ErrorDetails;
+import kr.adapterz.community.common.response.ApiResponseDto;
+import kr.adapterz.community.common.response.ErrorDetails;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;

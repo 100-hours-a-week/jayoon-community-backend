@@ -1,6 +1,6 @@
-package kr.adapterz.community.common.response.exception;
+package kr.adapterz.community.common.exception;
 
-import kr.adapterz.community.common.ErrorCode;
+import kr.adapterz.community.common.message.ErrorCode;
 import org.springframework.http.HttpStatus;
 
 public class BadRequestException extends RuntimeException implements ErrorStatusCodeProvider {

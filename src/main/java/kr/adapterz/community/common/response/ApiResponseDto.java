@@ -1,4 +1,4 @@
-package kr.adapterz.community.common.response.dto;
+package kr.adapterz.community.common.response;
 
 /**
  * @param <T>은 성공 시 필요하면 응답하게 될 data의 타입입니다.

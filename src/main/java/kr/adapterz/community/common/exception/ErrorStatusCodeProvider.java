@@ -1,4 +1,4 @@
-package kr.adapterz.community.common.response.exception;
+package kr.adapterz.community.common.exception;
 
 import org.springframework.http.HttpStatus;
 

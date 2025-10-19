@@ -1,12 +1,12 @@
 package kr.adapterz.community.auth.service;
 
-import static kr.adapterz.community.common.ErrorCode.AUTH_FAILURE;
+import static kr.adapterz.community.common.message.ErrorCode.AUTH_FAILURE;
 
 import kr.adapterz.community.auth.dto.JwtDto;
 import kr.adapterz.community.auth.dto.LoginRequestDto;
 import kr.adapterz.community.auth.dto.LoginResponseDto;
-import kr.adapterz.community.common.response.exception.UnauthorizedException;
-import kr.adapterz.community.common.security.Encoder;
+import kr.adapterz.community.common.exception.UnauthorizedException;
+import kr.adapterz.community.security.Encoder;
 import kr.adapterz.community.user.entity.User;
 import kr.adapterz.community.user.entity.UserAuth;
 import kr.adapterz.community.user.service.UserService;

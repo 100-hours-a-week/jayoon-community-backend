@@ -1,13 +1,13 @@
 package kr.adapterz.community.user.service;
 
-import static kr.adapterz.community.common.ErrorCode.USER_AUTH_NOT_FOUND;
-import static kr.adapterz.community.common.ErrorCode.USER_EMAIL_ALREADY_EXISTED;
-import static kr.adapterz.community.common.ErrorCode.USER_NICKNAME_ALREADY_EXISTED;
-import static kr.adapterz.community.common.ErrorCode.USER_NOT_FOUND;
+import static kr.adapterz.community.common.message.ErrorCode.USER_AUTH_NOT_FOUND;
+import static kr.adapterz.community.common.message.ErrorCode.USER_EMAIL_ALREADY_EXISTED;
+import static kr.adapterz.community.common.message.ErrorCode.USER_NICKNAME_ALREADY_EXISTED;
+import static kr.adapterz.community.common.message.ErrorCode.USER_NOT_FOUND;
 
-import kr.adapterz.community.common.response.exception.BadRequestException;
-import kr.adapterz.community.common.response.exception.NotFoundException;
-import kr.adapterz.community.common.security.Encoder;
+import kr.adapterz.community.common.exception.BadRequestException;
+import kr.adapterz.community.common.exception.NotFoundException;
+import kr.adapterz.community.security.Encoder;
 import kr.adapterz.community.user.dto.CreateUserRequest;
 import kr.adapterz.community.user.dto.UserResponse;
 import kr.adapterz.community.user.entity.User;

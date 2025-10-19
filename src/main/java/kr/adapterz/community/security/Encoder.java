@@ -1,4 +1,4 @@
-package kr.adapterz.community.common.security;
+package kr.adapterz.community.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;

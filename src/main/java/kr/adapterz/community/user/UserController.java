@@ -1,8 +1,8 @@
 package kr.adapterz.community.user;
 
-import static kr.adapterz.community.common.SuccessCode.USER_CREATE_SUCCESS;
+import static kr.adapterz.community.common.message.SuccessCode.USER_CREATE_SUCCESS;
 
-import kr.adapterz.community.common.response.dto.ApiResponseDto;
+import kr.adapterz.community.common.response.ApiResponseDto;
 import kr.adapterz.community.user.dto.CreateUserRequest;
 import kr.adapterz.community.user.dto.UserResponse;
 import kr.adapterz.community.user.service.UserService;
