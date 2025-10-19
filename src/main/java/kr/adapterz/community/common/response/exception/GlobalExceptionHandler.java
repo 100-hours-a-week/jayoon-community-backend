@@ -4,6 +4,8 @@ import kr.adapterz.community.common.response.dto.ApiResponseDto;
 import kr.adapterz.community.common.response.dto.ErrorDetails;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -23,6 +25,24 @@ public class GlobalExceptionHandler {
         ErrorDetails errorDetails = ErrorDetails.of(ex.getHttpStatusValue());
         ApiResponseDto<Void> response = ApiResponseDto.fail(errorDetails, ex.getMessage());
         return new ResponseEntity<>(response, ex.getHttpStatus());
+    }
+
+    /**
+     * @Valid로 컨트롤러 레벨에서 요청 유효성 검사를 진행하여 조건에 맞지 않으면 발생하는 예외를 처리합니다.
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiResponseDto<Void>> handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+
+        String errorMessage = "유효성 검증에 실패했습니다.";
+        for (FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
+            errorMessage = fieldError.getDefaultMessage();
+            break;
+        }
+
+        ErrorDetails errorDetails = ErrorDetails.of(HttpStatus.BAD_REQUEST.value());
+        ApiResponseDto<Void> response = ApiResponseDto.fail(errorDetails, errorMessage);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     /**

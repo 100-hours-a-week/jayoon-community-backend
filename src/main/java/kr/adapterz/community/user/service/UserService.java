@@ -70,4 +70,9 @@ public class UserService {
         return userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
     }
+
+    public UserAuth findUserAuthByEmail(String email) {
+        return userAuthRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+    }
 }
