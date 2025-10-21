@@ -20,9 +20,11 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping
-    public ResponseEntity<ApiResponseDto<PostResponse>> createPost(@RequestBody CreatePostRequest request) {
+    public ResponseEntity<ApiResponseDto<PostResponse>> createPost(
+            @RequestBody CreatePostRequest request) {
         PostResponse newPost = postService.createPost(request);
-        ApiResponseDto<PostResponse> responseBody = ApiResponseDto.success(newPost, "게시글 작성을 성공했습니다.");
+        ApiResponseDto<PostResponse> responseBody = ApiResponseDto.success(newPost,
+                "게시글 작성을 성공했습니다.");
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 

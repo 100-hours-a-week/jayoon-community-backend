@@ -20,10 +20,12 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping
-    public ResponseEntity<ApiResponseDto<LoginResponseDto>> login(@Valid @RequestBody LoginRequestDto dto) {
+    public ResponseEntity<ApiResponseDto<LoginResponseDto>> login(
+            @Valid @RequestBody LoginRequestDto dto) {
 
         LoginResponseDto loginResponseDto = authService.createAuth(dto);
-        ApiResponseDto<LoginResponseDto> responseBody = ApiResponseDto.success(loginResponseDto, "로그인에 성공하였습니다.");
+        ApiResponseDto<LoginResponseDto> responseBody = ApiResponseDto.success(loginResponseDto,
+                "로그인에 성공하였습니다.");
         return ResponseEntity.ok()
 //                .header(HttpHeaders.SET_COOKIE)
                 .body(responseBody);

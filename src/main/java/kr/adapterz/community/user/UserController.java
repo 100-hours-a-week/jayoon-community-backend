@@ -22,7 +22,8 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<ApiResponseDto<UserResponse>> createUser(@RequestBody CreateUserRequest request) {
+    public ResponseEntity<ApiResponseDto<UserResponse>> createUser(
+            @RequestBody CreateUserRequest request) {
         UserResponse newUser = userService.createUser(request);
         ApiResponseDto<UserResponse> responseBody = ApiResponseDto.success(newUser,
                 USER_CREATE_SUCCESS.getMessage());
