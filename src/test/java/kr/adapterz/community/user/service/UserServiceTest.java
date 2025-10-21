@@ -58,7 +58,7 @@ class UserServiceTest {
         // when (무엇을 할 때)
         // @InjectMocks으로 인해 Mock 객체가 주입된 UserService::createUser를 실행하게 됩니다.
         // given()에서 주어진 값을 만났을 때 실제로 실행되지 않고, willReturn에서 정의한 값으로 대체됩니다.
-        UserResponse response = userService.createUser(request);
+        UserResponse response = userService.signup(request);
 
         // then (결과는 이래야 한다)
         // assertThat은 상태를 검증한다.
@@ -89,7 +89,7 @@ class UserServiceTest {
 
         // when
         BadRequestException exception = assertThrows(BadRequestException.class, () -> {
-            userService.createUser(request);
+            userService.signup(request);
         });
 
         // then
@@ -107,7 +107,7 @@ class UserServiceTest {
 
         // when
         BadRequestException exception = assertThrows(BadRequestException.class, () -> {
-            userService.createUser(request);
+            userService.signup(request);
         });
 
         // then

@@ -30,7 +30,7 @@ public class UserService {
      * 유저를 생성합니다.
      */
     @Transactional
-    public UserResponse createUser(CreateUserRequest request) {
+    public UserResponse signup(CreateUserRequest request) {
         if (userAuthRepository.existsByEmail((request.email()))) {
             throw new BadRequestException(USER_EMAIL_ALREADY_EXISTED);
         }
