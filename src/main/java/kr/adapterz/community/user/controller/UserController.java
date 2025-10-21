@@ -1,7 +1,8 @@
-package kr.adapterz.community.user;
+package kr.adapterz.community.user.controller;
 
 import static kr.adapterz.community.common.message.SuccessCode.USER_CREATE_SUCCESS;
 
+import jakarta.validation.Valid;
 import kr.adapterz.community.common.response.ApiResponseDto;
 import kr.adapterz.community.user.dto.CreateUserRequest;
 import kr.adapterz.community.user.dto.UserResponse;
@@ -21,10 +22,13 @@ public class UserController {
 
     private final UserService userService;
 
+    /**
+     * 회원가입
+     */
     @PostMapping
     public ResponseEntity<ApiResponseDto<UserResponse>> createUser(
-            @RequestBody CreateUserRequest request) {
-        UserResponse newUser = userService.createUser(request);
+            @Valid @RequestBody CreateUserRequest request) {
+        UserResponse newUser = userService.signup(request);
         ApiResponseDto<UserResponse> responseBody = ApiResponseDto.success(newUser,
                 USER_CREATE_SUCCESS.getMessage());
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
