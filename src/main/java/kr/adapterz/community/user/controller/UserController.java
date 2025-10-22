@@ -4,8 +4,8 @@ import static kr.adapterz.community.common.message.SuccessCode.USER_CREATE_SUCCE
 
 import jakarta.validation.Valid;
 import kr.adapterz.community.common.response.ApiResponseDto;
-import kr.adapterz.community.user.dto.CreateUserRequest;
-import kr.adapterz.community.user.dto.UserResponse;
+import kr.adapterz.community.user.dto.CreateUserRequestDto;
+import kr.adapterz.community.user.dto.UserResponseDto;
 import kr.adapterz.community.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,10 +26,10 @@ public class UserController {
      * 회원가입
      */
     @PostMapping
-    public ResponseEntity<ApiResponseDto<UserResponse>> createUser(
-            @Valid @RequestBody CreateUserRequest request) {
-        UserResponse newUser = userService.signup(request);
-        ApiResponseDto<UserResponse> responseBody = ApiResponseDto.success(newUser,
+    public ResponseEntity<ApiResponseDto<UserResponseDto>> createUser(
+            @Valid @RequestBody CreateUserRequestDto request) {
+        UserResponseDto newUser = userService.signup(request);
+        ApiResponseDto<UserResponseDto> responseBody = ApiResponseDto.success(newUser,
                 USER_CREATE_SUCCESS.getMessage());
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }

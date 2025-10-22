@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-public record CreateUserRequest(
+public record CreateUserRequestDto(
         @NotBlank(message = "이메일은 필수 입력 값입니다.")
         @Email(message = "이메일 형식이 올바르지 않습니다.")
         @Size(max = 320, message = "이메일은 최대 320자까지 입력 가능합니다.")
