@@ -41,7 +41,9 @@ public class UserService {
             throw new BadRequestException(USER_NICKNAME_ALREADY_EXISTED);
         }
 
+        // auto increment PK이므로 DB에 저장을 해야 생성 됨
         User newUser = User.from(request);
+        // PK 생성 됨
         User savedUser = userRepository.save(newUser);
 
         String passwordHash = encoder.encodePassword(request.password());
@@ -52,7 +54,7 @@ public class UserService {
         );
         userAuthRepository.save(newUserAuth);
 
-        JwtDto jwtDto = jwtManager.generateToken(newUser.getId());
+        JwtDto jwtDto = jwtManager.generateToken(savedUser.getId());
         return UserResponseDto.of(savedUser, request.email(), jwtDto);
     }
 

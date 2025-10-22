@@ -11,8 +11,10 @@ import static org.mockito.Mockito.verify;
 
 import kr.adapterz.community.common.exception.BadRequestException;
 import kr.adapterz.community.security.Encoder;
-import kr.adapterz.community.user.dto.CreateUserRequest;
-import kr.adapterz.community.user.dto.UserResponse;
+import kr.adapterz.community.security.jwt.JwtDto;
+import kr.adapterz.community.security.jwt.JwtManager;
+import kr.adapterz.community.user.dto.CreateUserRequestDto;
+import kr.adapterz.community.user.dto.UserResponseDto;
 import kr.adapterz.community.user.entity.User;
 import kr.adapterz.community.user.entity.UserAuth;
 import kr.adapterz.community.user.repository.UserAuthRepository;
@@ -40,25 +42,35 @@ class UserServiceTest {
     @Mock
     private Encoder encoder;
 
+    @Mock
+    private JwtManager jwtManager;
+
     @DisplayName("회원가입 성공 테스트")
     @Test
     void 회원가입_성공() {
         // given (조건이 주어지고,)
-        CreateUserRequest request = new CreateUserRequest("test@email.com", "password123",
+        CreateUserRequestDto request = new CreateUserRequestDto("test@email.com", "password123",
                 "testuser", "url");
         User savedUser = User.from(request);
         ReflectionTestUtils.setField(savedUser, "id", 1L); // savedUser 객체의 'id' 필드에 1L 값을 강제로 주입
+        JwtDto jwtDto = JwtDto.builder()
+                .tokenType("Bearer")
+                .accessToken("example")
+                .refreshToken("example")
+                .expiresIn(3600L)
+                .build();
         // Mock 객체의 행동 정의
         // BDD(Behavior Driven Development)를 따라 mockito 기본 API인 when이 아닌 wrapping한 given을 사용합니다.
         given(userAuthRepository.existsByEmail(request.email())).willReturn(false);
         given(userRepository.existsByNickname(request.nickname())).willReturn(false);
         given(encoder.encodePassword(request.password())).willReturn("encodedPassword");
         given(userRepository.save(any(User.class))).willReturn(savedUser);
+        given(jwtManager.generateToken(savedUser.getId())).willReturn(jwtDto);
 
         // when (무엇을 할 때)
         // @InjectMocks으로 인해 Mock 객체가 주입된 UserService::createUser를 실행하게 됩니다.
         // given()에서 주어진 값을 만났을 때 실제로 실행되지 않고, willReturn에서 정의한 값으로 대체됩니다.
-        UserResponse response = userService.signup(request);
+        UserResponseDto response = userService.signup(request);
 
         // then (결과는 이래야 한다)
         // assertThat은 상태를 검증한다.
@@ -83,7 +95,7 @@ class UserServiceTest {
     @Test
     void 회원가입_실패_이메일_중복() {
         // given
-        CreateUserRequest request = new CreateUserRequest("test@email.com", "password123",
+        CreateUserRequestDto request = new CreateUserRequestDto("test@email.com", "password123",
                 "testuser", "url");
         given(userAuthRepository.existsByEmail(request.email())).willReturn(true);
 
@@ -100,7 +112,7 @@ class UserServiceTest {
     @Test
     void 회원가입_실패_닉네임_중복() {
         // given
-        CreateUserRequest request = new CreateUserRequest("test@email.com", "password123",
+        CreateUserRequestDto request = new CreateUserRequestDto("test@email.com", "password123",
                 "testuser", "url");
         given(userAuthRepository.existsByEmail(request.email())).willReturn(false);
         given(userRepository.existsByNickname(request.nickname())).willReturn(true);
