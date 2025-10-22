@@ -44,7 +44,8 @@ dependencies {
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
     // docs
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0' // swagger
+    implementation 'org.springframework.boot:spring-boot-starter-validation' // @Valid
 }
 
 tasks.named('test') {
