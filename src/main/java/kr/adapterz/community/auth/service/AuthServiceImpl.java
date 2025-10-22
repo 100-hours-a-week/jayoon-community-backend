@@ -2,11 +2,12 @@ package kr.adapterz.community.auth.service;
 
 import static kr.adapterz.community.common.message.ErrorCode.AUTH_FAILURE;
 
-import kr.adapterz.community.auth.dto.JwtDto;
 import kr.adapterz.community.auth.dto.LoginRequestDto;
 import kr.adapterz.community.auth.dto.LoginResponseDto;
 import kr.adapterz.community.common.exception.UnauthorizedException;
 import kr.adapterz.community.security.Encoder;
+import kr.adapterz.community.security.jwt.JwtDto;
+import kr.adapterz.community.security.jwt.JwtManager;
 import kr.adapterz.community.user.entity.User;
 import kr.adapterz.community.user.entity.UserAuth;
 import kr.adapterz.community.user.service.UserService;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 public class AuthServiceImpl implements AuthService {
     private final UserService userService;
     private final Encoder encoder;
+    private final JwtManager jwtManager;
 
     @Override
     public LoginResponseDto createAuth(LoginRequestDto dto) {
@@ -27,8 +29,7 @@ public class AuthServiceImpl implements AuthService {
             throw new UnauthorizedException(AUTH_FAILURE);
         }
         User user = userService.findById(userAuth.getUser().getId());
-        // 인증 정보 생성, 7주차 구현 예정
-        JwtDto jwtDto = new JwtDto("Bearer", "example", "example", 3600L);
+        JwtDto jwtDto = jwtManager.generateToken(user.getId());
         return LoginResponseDto.of(userAuth.getEmail(), user, jwtDto);
     }
 

@@ -8,8 +8,10 @@ import static kr.adapterz.community.common.message.ErrorCode.USER_NOT_FOUND;
 import kr.adapterz.community.common.exception.BadRequestException;
 import kr.adapterz.community.common.exception.NotFoundException;
 import kr.adapterz.community.security.Encoder;
-import kr.adapterz.community.user.dto.CreateUserRequest;
-import kr.adapterz.community.user.dto.UserResponse;
+import kr.adapterz.community.security.jwt.JwtDto;
+import kr.adapterz.community.security.jwt.JwtManager;
+import kr.adapterz.community.user.dto.CreateUserRequestDto;
+import kr.adapterz.community.user.dto.UserResponseDto;
 import kr.adapterz.community.user.entity.User;
 import kr.adapterz.community.user.entity.UserAuth;
 import kr.adapterz.community.user.repository.UserAuthRepository;
@@ -25,12 +27,13 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserAuthRepository userAuthRepository;
     private final Encoder encoder;
+    private final JwtManager jwtManager;
 
     /**
      * 유저를 생성합니다.
      */
     @Transactional
-    public UserResponse signup(CreateUserRequest request) {
+    public UserResponseDto signup(CreateUserRequestDto request) {
         if (userAuthRepository.existsByEmail((request.email()))) {
             throw new BadRequestException(USER_EMAIL_ALREADY_EXISTED);
         }
@@ -49,18 +52,21 @@ public class UserService {
         );
         userAuthRepository.save(newUserAuth);
 
-        return UserResponse.of(savedUser, request.email());
+        JwtDto jwtDto = jwtManager.generateToken(newUser.getId());
+        return UserResponseDto.of(savedUser, request.email(), jwtDto);
     }
 
     /**
      * 브라우저가 저장할 유저의 최소 정보를 반환합니다.
      */
-    public UserResponse getUserInfoById(Long id) {
+    public UserResponseDto getUserInfoById(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
         UserAuth userAuth = userAuthRepository.findById(user.getId())
                 .orElseThrow(() -> new NotFoundException(USER_AUTH_NOT_FOUND));
-        return UserResponse.of(user, userAuth.getEmail());
+
+        JwtDto jwtDto = jwtManager.generateToken(id);
+        return UserResponseDto.of(user, userAuth.getEmail(), jwtDto);
     }
 
     /**

@@ -1,5 +1,6 @@
 package kr.adapterz.community.auth.dto;
 
+import kr.adapterz.community.security.jwt.JwtDto;
 import kr.adapterz.community.user.entity.User;
 import lombok.Builder;
 
