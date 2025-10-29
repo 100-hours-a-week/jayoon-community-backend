@@ -38,9 +38,13 @@ public enum ErrorCode {
     // UserAuth
     USER_AUTH_NOT_FOUND("유저 인증 정보가 존재하지 않습니다."),
 
+    // Image
+    INVALID_IMAGE_PATH("이미지의 경로가 올바르지 않습니다."),
+
     // Post
     POST_NOT_FOUND("해당 게시물을 찾을 수 없습니다."),
     POST_ACCESS_DENIED("해당 게시물에 대한 접근 권한이 없습니다.");
+
 
     private final String message;
 }
