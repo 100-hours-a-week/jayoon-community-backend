@@ -8,8 +8,6 @@ import static kr.adapterz.community.common.message.ErrorCode.USER_NOT_FOUND;
 import kr.adapterz.community.common.exception.BadRequestException;
 import kr.adapterz.community.common.exception.NotFoundException;
 import kr.adapterz.community.security.Encoder;
-import kr.adapterz.community.security.jwt.JwtDto;
-import kr.adapterz.community.security.jwt.JwtManager;
 import kr.adapterz.community.user.dto.CreateUserRequestDto;
 import kr.adapterz.community.user.dto.UserResponseDto;
 import kr.adapterz.community.user.entity.User;
@@ -27,7 +25,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserAuthRepository userAuthRepository;
     private final Encoder encoder;
-    private final JwtManager jwtManager;
 
     /**
      * 유저를 생성합니다.
@@ -54,8 +51,7 @@ public class UserService {
         );
         userAuthRepository.save(newUserAuth);
 
-        JwtDto jwtDto = jwtManager.generateToken(savedUser.getId());
-        return UserResponseDto.of(savedUser, request.email(), jwtDto);
+        return UserResponseDto.of(savedUser, request.email());
     }
 
     /**
@@ -67,8 +63,7 @@ public class UserService {
         UserAuth userAuth = userAuthRepository.findById(user.getId())
                 .orElseThrow(() -> new NotFoundException(USER_AUTH_NOT_FOUND));
 
-        JwtDto jwtDto = jwtManager.generateToken(id);
-        return UserResponseDto.of(user, userAuth.getEmail(), jwtDto);
+        return UserResponseDto.of(user, userAuth.getEmail());
     }
 
     /**
