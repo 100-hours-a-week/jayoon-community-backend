@@ -1,8 +1,8 @@
 package kr.adapterz.community.security.jwt;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 public class JwtManager {
     // ToDo 인증 정보 생성, 7주차 구현 예정
     public JwtDto generateToken(Long userId) {

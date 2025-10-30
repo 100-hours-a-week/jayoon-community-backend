@@ -2,9 +2,9 @@ package kr.adapterz.community.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 @RequiredArgsConstructor
 public class Encoder {
     private final PasswordEncoder passwordEncoder;
