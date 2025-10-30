@@ -37,6 +37,7 @@ public enum ErrorCode {
 
     // UserAuth
     USER_AUTH_NOT_FOUND("유저 인증 정보가 존재하지 않습니다."),
+    INVALID_SESSION("유효하지 않는 세션 정보입니다."),
 
     // Image
     INVALID_IMAGE_PATH("이미지의 경로가 올바르지 않습니다."),
