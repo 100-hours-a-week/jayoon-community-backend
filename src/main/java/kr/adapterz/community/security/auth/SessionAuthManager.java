@@ -65,7 +65,7 @@ public class SessionAuthManager implements AuthManager {
     }
 
     /**
-     * 인가가 필요한 기능에서 사용하기 위한 인증된 userId를 반환합니다.
+     * 세션이 유효한지 검증하며, 인증된 유저의 userId를 반환합니다.
      * <p>
      * 클라이언트의 요청 쿠키에서 sessionId를 찾고, 서버의 세션 저장소에서 이를 이용해 userId를 찾아 반환합니다.
      * <p>
