@@ -9,8 +9,8 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import kr.adapterz.community.common.exception.dto.UnauthorizedException;
 import kr.adapterz.community.common.message.ErrorCode;
-import kr.adapterz.community.common.security.jwt.JWTDto;
-import kr.adapterz.community.common.security.jwt.JWTManager;
+import kr.adapterz.community.common.security.jwt.JwtDto;
+import kr.adapterz.community.common.security.jwt.JwtManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
@@ -19,8 +19,8 @@ import org.springframework.stereotype.Component;
 @Component
 @Profile("jwt")
 @RequiredArgsConstructor
-public class JWTAuthManager implements AuthManager {
-    private final JWTManager jwtManager;
+public class JwtAuthManager implements AuthManager {
+    private final JwtManager jwtManager;
 
     public static final String ACCESS_COOKIE_NAME = "ACCESS_TOKEN";
     public static final String REFRESH_COOKIE_NAME = "REFRESH_TOKEN";
@@ -50,7 +50,7 @@ public class JWTAuthManager implements AuthManager {
         findCookie(request, REFRESH_COOKIE_NAME)
                 .ifPresent(cookie -> refreshTokens.remove(cookie.getValue()));
 
-        JWTDto dto = jwtManager.generateTokens(userId);
+        JwtDto dto = jwtManager.generateTokens(userId);
         refreshTokens.put(dto.refreshToken(), userId);
         addCookie(response, ACCESS_COOKIE_NAME, dto.accessToken(),
                 (int) accessTokenExpirationMs / 1000);
