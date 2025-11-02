@@ -2,9 +2,11 @@ package kr.adapterz.community.common.security.auth;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Component
+@Profile("jwt")
 public class JWTAuthManager implements AuthManager {
     /**
      * JWT access token과 refresh token을 생성하여 헤더 쿠키에 넣습니다.

@@ -12,9 +12,11 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import kr.adapterz.community.common.exception.dto.UnauthorizedException;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Component
+@Profile("session")
 public class SessionAuthManager implements AuthManager {
     public static final String COOKIE_NAME = "SESSION_ID";
     // 60초 * 60분 * 24시간 * 30일
