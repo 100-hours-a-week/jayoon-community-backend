@@ -18,7 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class JwtManager {
+public class JWTManager {
     @Value("${jwt.secret}")
     private String secretKey;
 
@@ -47,10 +47,10 @@ public class JwtManager {
      * @param userId
      * @return
      */
-    public JwtDto generateTokens(Long userId) {
+    public JWTDto generateTokens(Long userId) {
         String accessToken = generateAccessToken(userId);
         String refreshToken = generateRefreshToken();
-        return new JwtDto(accessToken, refreshToken);
+        return new JWTDto(accessToken, refreshToken);
     }
 
     /**

@@ -1,6 +1,6 @@
 package kr.adapterz.community.common.security.jwt;
 
-public record JwtDto(
+public record JWTDto(
         String accessToken, String refreshToken
 ) {
 }
