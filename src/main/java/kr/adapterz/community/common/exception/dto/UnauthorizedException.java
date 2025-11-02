@@ -1,4 +1,4 @@
-package kr.adapterz.community.common.exception;
+package kr.adapterz.community.common.exception.dto;
 
 import kr.adapterz.community.common.message.ErrorCode;
 import org.springframework.http.HttpStatus;
