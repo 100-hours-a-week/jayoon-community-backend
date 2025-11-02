@@ -1,11 +1,14 @@
 package kr.adapterz.community.common.config;
 
+import java.util.List;
 import kr.adapterz.community.common.exception.handler.FilterExceptionHandler;
 import kr.adapterz.community.common.security.auth.AuthenticationFilter;
+import kr.adapterz.community.common.web.resolver.LoginUserArgumentResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -15,6 +18,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
     private final AuthenticationFilter authenticationFilter;
     private final FilterExceptionHandler filterExceptionHandler;
+    private final LoginUserArgumentResolver loginUserArgumentResolver;
 
     /**
      * Servlet Context에서 0순위로 필터를 실행하며, 모든 Filter의 예외를 처리합니다.
@@ -44,6 +48,16 @@ public class WebConfig implements WebMvcConfigurer {
         registration.addUrlPatterns("/*");
         registration.setOrder(1);
         return registration;
+    }
+
+    /**
+     * Custom Annotation 구현을 위한 Resolver 등록합니다.
+     *
+     * @param resolvers initially an empty list
+     */
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(loginUserArgumentResolver);
     }
 
     /**
