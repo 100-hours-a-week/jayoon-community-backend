@@ -1,5 +1,6 @@
 package kr.adapterz.community.common.config;
 
+import kr.adapterz.community.common.exception.handler.FilterExceptionHandler;
 import kr.adapterz.community.common.security.auth.AuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -13,12 +14,28 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
     private final AuthenticationFilter authenticationFilter;
+    private final FilterExceptionHandler filterExceptionHandler;
+
+    /**
+     * Servlet Context에서 0순위로 필터를 실행하며, 모든 Filter의 예외를 처리합니다.
+     *
+     * @return
+     */
+    @Bean
+    FilterRegistrationBean<FilterExceptionHandler> FilterExceptionHandlerRegistrationBean() {
+        FilterRegistrationBean<FilterExceptionHandler> registration = new FilterRegistrationBean<>();
+        registration.setFilter(filterExceptionHandler);
+        registration.addUrlPatterns("/*");
+        registration.setOrder(0);
+        return registration;
+    }
 
     /**
      * 모든 핸들러 요청에서 인증을 진행할 AuthenticationFilter를 필터로 등록합니다.
+     * <p>
+     * '@Bean'이 붙은 메서드는 자동으로 해당 메서드 이름을 하는 빈이 생성 됩니다. 이는 authenticationFilter를 필터에 등록하는 빈 생성
      *
      * @return
-     * @Bean이 붙은 메서드는 자동으로 해당 메서드 이름을 하는 빈이 생성 됩니다. 이는 authenticationFilter를 필터에 등록하는 빈 생성
      */
     @Bean
     FilterRegistrationBean<AuthenticationFilter> authenticationFilterRegistrationBean() {
