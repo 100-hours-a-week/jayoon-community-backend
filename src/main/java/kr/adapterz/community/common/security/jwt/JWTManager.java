@@ -59,7 +59,7 @@ public class JWTManager {
      * @param userId
      * @return
      */
-    public String generateAccessToken(Long userId) {
+    private String generateAccessToken(Long userId) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + accessTokenExpirationMs);
 
@@ -83,7 +83,7 @@ public class JWTManager {
      *
      * @return UUID
      */
-    public String generateRefreshToken() {
+    private String generateRefreshToken() {
         return UUID.randomUUID().toString();
     }
 

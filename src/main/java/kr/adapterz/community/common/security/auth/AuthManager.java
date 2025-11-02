@@ -25,7 +25,7 @@ public interface AuthManager {
      *
      * @param request
      */
-    void logout(HttpServletRequest request);
+    void logout(HttpServletRequest request, HttpServletResponse response);
 
     /**
      * 인증 정보가 유효한지 검증하고, 유효하다면 유저 아이디를 반환합니다.
