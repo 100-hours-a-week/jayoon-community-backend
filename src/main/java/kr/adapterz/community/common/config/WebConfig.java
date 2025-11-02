@@ -1,6 +1,6 @@
 package kr.adapterz.community.common.config;
 
-import kr.adapterz.community.security.auth.AuthenticationFilter;
+import kr.adapterz.community.common.security.auth.AuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
