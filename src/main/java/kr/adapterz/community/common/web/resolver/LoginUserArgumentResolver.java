@@ -19,7 +19,7 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
      * 2. 파라미터의 타입이 Long인가?
      *
      * @param parameter the method parameter to check
-     * @return
+     * @return 어노테이션 타입이 LoginUser이고, 파라미터 타입이 Long이면 참을, 아니라면 false를 반환합니다.
      */
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -41,7 +41,7 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
      * @param mavContainer  the ModelAndViewContainer for the current request
      * @param webRequest    the current request
      * @param binderFactory a factory for creating {@link WebDataBinder} instances
-     * @return
+     * @return userId를 반환합니다.
      * @throws Exception
      */
     @Override
