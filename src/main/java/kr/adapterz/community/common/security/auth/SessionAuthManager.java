@@ -61,9 +61,10 @@ public class SessionAuthManager implements AuthManager {
      * @param request
      */
     @Override
-    public void logout(HttpServletRequest request) {
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
         findCookie(request)
                 .ifPresent(cookie -> sessions.remove(cookie.getValue()));
+        clearCookie(response, COOKIE_NAME);
     }
 
     /**
@@ -112,6 +113,8 @@ public class SessionAuthManager implements AuthManager {
      * 응답 쿠키에 세션 아이디를 추가합니다.
      * <p>
      * SameSite는 Lax가 기본값입니다.
+     * <p>
+     * cookie.setSecure(true); // 현재는 local이므로 HTTPS 사용하지 않음
      *
      * @param authInfo
      * @param response
@@ -121,7 +124,16 @@ public class SessionAuthManager implements AuthManager {
         cookie.setMaxAge(EXPIRES_IN);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
-//        cookie.setSecure(true); // 현재는 local이므로 HTTPS 사용하지 않음
+        response.addCookie(cookie);
+    }
+
+    /**
+     * 응답 쿠키를 만료시킵니다.
+     */
+    private void clearCookie(HttpServletResponse response, String cookieName) {
+        Cookie cookie = new Cookie(cookieName, null);
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
         response.addCookie(cookie);
     }
 }
