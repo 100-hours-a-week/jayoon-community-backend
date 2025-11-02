@@ -81,7 +81,7 @@ public class JwtAuthManager implements AuthManager {
     @Override
     public Long getAuthenticatedUserId(HttpServletRequest request) {
         // 요청의 쿠키에서 AT가 유효한지 검사
-        Cookie cookie = findCookie(request, REFRESH_COOKIE_NAME)
+        Cookie cookie = findCookie(request, ACCESS_COOKIE_NAME)
                 .orElseThrow(() -> new UnauthorizedException(ErrorCode.TOKEN_INVALID));
         // AT의 페이로드에서 userId 추출하여 반환
         return jwtManager.getUserIdFromToken(cookie.getValue());

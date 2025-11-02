@@ -89,6 +89,8 @@ public class JwtManager {
 
     /**
      * 토큰의 유효성 검사를 진행합니다.
+     * <p>
+     * ExpiredJwtException은 JwtException의 자식 예외입니다. 클라이언트 측에서 토큰 재발급 처리가 필요합니다.
      *
      * @param token
      * @return
@@ -111,6 +113,8 @@ public class JwtManager {
 
     /**
      * Access token에서 userId를 추출합니다.
+     * <p>
+     * ExpiredJwtException은 JwtException의 자식 예외입니다. 클라이언트 측에서 토큰 재발급 처리가 필요합니다.
      *
      * @param token
      * @return
@@ -125,6 +129,8 @@ public class JwtManager {
                     .parseSignedClaims(token)
                     .getPayload();
             return Long.parseLong(claims.getSubject());
+        } catch (ExpiredJwtException e) {
+            throw new UnauthorizedException(TOKEN_EXPIRED);
         } catch (JwtException | IllegalArgumentException e) {
             throw new UnauthorizedException(TOKEN_INVALID);
         }
