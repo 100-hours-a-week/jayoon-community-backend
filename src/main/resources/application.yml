@@ -25,3 +25,8 @@ file:
   upload-dir: ./uploads/images/
   # 클라이언트가 이미지에 접근할 때 사용할 서버 기본 URL
   base-url: http://localhost:8080
+
+jwt:
+  secret: "jaesangYSecretKeyjaesangYInProduction64BytesjaesangY"
+  access-token-expiration-ms: 1800000  # 30분
+  refresh-token-expiration-ms: 2592000000 # 30일
