@@ -1,5 +1,7 @@
 package kr.adapterz.community.common.security.auth;
 
+import static kr.adapterz.community.common.message.ErrorCode.TOKEN_INVALID;
+
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -8,7 +10,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import kr.adapterz.community.common.exception.dto.UnauthorizedException;
-import kr.adapterz.community.common.message.ErrorCode;
 import kr.adapterz.community.common.security.jwt.JwtDto;
 import kr.adapterz.community.common.security.jwt.JwtManager;
 import lombok.RequiredArgsConstructor;
@@ -65,26 +66,24 @@ public class JwtAuthManager implements AuthManager {
      */
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response) {
-        // 서버에서 RT 삭제
         findCookie(request, REFRESH_COOKIE_NAME)
                 .ifPresent(cookie -> refreshTokens.remove(cookie.getValue()));
-        // 쿠키에서 RT 삭제
+
+        clearCookie(response, ACCESS_COOKIE_NAME);
         clearCookie(response, REFRESH_COOKIE_NAME);
     }
 
     /**
-     * 쿠키에서 access token이 유효한지 검사한 뒤, userId를 추출하여 반환합니다.
+     * 쿠키에서 access token이 존재하는지 검사한 뒤, 유효성 검사 후 userId를 추출하여 반환합니다.
      *
      * @param request
      * @return
      */
     @Override
     public Long getAuthenticatedUserId(HttpServletRequest request) {
-        // 요청의 쿠키에서 AT가 유효한지 검사
         Cookie cookie = findCookie(request, ACCESS_COOKIE_NAME)
-                .orElseThrow(() -> new UnauthorizedException(ErrorCode.TOKEN_INVALID));
-        // AT의 페이로드에서 userId 추출하여 반환
-        return jwtManager.getUserIdFromToken(cookie.getValue());
+                .orElseThrow(() -> new UnauthorizedException(TOKEN_INVALID));
+        return jwtManager.getAuthenticatedUserIdFromToken(cookie.getValue());
     }
 
     /**
