@@ -121,7 +121,7 @@ public class JwtManager {
      * @Exception IllegalArgumentException은 parseSignedClaims에서 token이 null이나 비어있거나 white space 하나만
      * 있을 때 발생합니다.
      */
-    public Long getUserIdFromToken(String token) {
+    public Long getAuthenticatedUserIdFromToken(String token) {
         try {
             Claims claims = Jwts.parser()
                     .verifyWith(key)
