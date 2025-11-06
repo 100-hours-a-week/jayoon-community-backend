@@ -16,16 +16,4 @@
 
 ## Convention
 
-### Java code
-
-- [x] [woowacourse](https://github.com/woowacourse/woowacourse-docs/tree/main/styleguide/java)
-    - Google convention을 기반으로 작성된 우아한 형제들의 우테코 컨벤션을 사용합니다.
-    - 한국의 대기업이 사용하는 컨벤션을 사용하고 싶어서 적용했습니다.
-    - src/main/resources/static/intellij-java-wooteco-style.xml 경로에 저장 되어 있습니다.
-    - [해당 블로그](https://velog.io/@pgmjun/IntelliJ-%EC%BD%94%EB%93%9C-%EC%8A%A4%ED%83%80%EC%9D%BC%EC%9D%84-%EC%84%A4%EC%A0%95%ED%95%B4%EB%B3%B4%EC%9E%90-feat.%EC%9A%B0%ED%85%8C%EC%BD%94)
-      참고하였습니다.
-    - 컨벤션 적용할 패키지를 우클릭 후 Reformat code를 누르거나, `cmd + option + L` 단축키 클릭
-
-### Git commit
-
-- [x] [개인 Notion](https://jayoon.notion.site/git-commit-435f8bd8a3ed4133a163c019a3dbc9e5?source=copy_link)
+- [x] [개인 Notion](https://jayoon.notion.site/Convention-2a32ff1a1acc80a6bca6c0d0d70e57b8?source=copy_link)
