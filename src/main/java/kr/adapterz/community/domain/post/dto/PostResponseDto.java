@@ -9,7 +9,7 @@ import lombok.Builder;
  * 게시글 조회/생성/수정 후 클라이언트에 반환할 응답 데이터 레코드
  */
 @Builder
-public record PostResponse(
+public record PostResponseDto(
         Long id,
         String title,
         String body,
@@ -34,15 +34,15 @@ public record PostResponse(
         }
     }
 
-    public static PostResponse from(Post post) {
-        return PostResponse.builder()
+    public static PostResponseDto from(Post post) {
+        return PostResponseDto.builder()
                 .id(post.getId())
                 .title(post.getTitle())
                 .body(post.getBody())
                 .likeCount(post.getLikeCount())
                 .commentCount(post.getCommentCount())
                 .viewCount(post.getViewCount())
-//                .imageUrls(post.getImageUrls())
+                .imageUrls(List.of("test-image"))
                 .user(UserResponse.from(post.getUser().getId(), post.getUser().getNickname()))
                 .createdAt(post.getCreatedAt())
                 .build();

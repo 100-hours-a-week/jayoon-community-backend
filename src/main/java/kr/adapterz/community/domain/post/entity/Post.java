@@ -11,7 +11,7 @@ import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
-import kr.adapterz.community.domain.post.dto.CreatePostRequest;
+import kr.adapterz.community.domain.post.dto.PostCreateRequestDto;
 import kr.adapterz.community.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -67,7 +67,7 @@ public class Post {
     protected Post() {
     }
 
-    public static Post createFrom(User user, CreatePostRequest request) {
+    public static Post createFrom(User user, PostCreateRequestDto request) {
         return Post.builder()
                 .user(user)
                 .title(request.title())
