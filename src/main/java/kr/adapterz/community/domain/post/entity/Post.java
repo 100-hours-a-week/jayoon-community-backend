@@ -67,6 +67,15 @@ public class Post {
     protected Post() {
     }
 
+    /**
+     * Post Entity를 생성합니다.
+     *
+     * 초기 생성이므로 viewCount, likeCount, commentCount는 모두 0이어야 합니다.
+     *
+     * @param user
+     * @param request
+     * @return
+     */
     public static Post createFrom(User user, PostCreateRequestDto request) {
         return Post.builder()
                 .user(user)
