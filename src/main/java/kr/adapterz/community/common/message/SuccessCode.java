@@ -25,6 +25,10 @@ public enum SuccessCode {
     USER_CREATE_SUCCESS("회원가입을 성공했습니다."),
     USER_GET_SUCCESS("사용자 조회가 성공적으로 완료되었습니다."),
 
+    // Image
+    PRE_SIGNED_URL_ISSUED("Pre-signed URL이 성공적으로 발급되었습니다."),
+    IMAGE_UPLOAD_SUCCESS("이미지 업로드에 성공했습니다."),
+
     // Post
     POST_CREATE_SUCCESS("게시물 생성이 성공적으로 완료되었습니다."),
     POST_GET_SUCCESS("게시물 조회가 성공적으로 완료되었습니다."),
