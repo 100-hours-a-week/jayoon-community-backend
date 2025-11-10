@@ -2,7 +2,7 @@
 
 # --- (1) 사용자 설정 ---
 PEM_KEY="~/Downloads/community.pem"
-EC2_HOST="3.38.215.159"
+EC2_HOST="3.38.115.200"
 EC2_USER="ubuntu"
 
 # --- (2) 프로젝트 경로 설정 ---
@@ -119,13 +119,11 @@ elif [ "$MODE" == "dev" ]; then
 
         echo '>> (Nginx) 설정 파일 배포'
         sudo cp \$NGINX_CONFIG_STAGING_PATH \$NGINX_CONFIG_DEPLOY_PATH
+        sudo rm -f \$NGINX_CONFIG_STAGING_PATH
 
         echo '>> (FE) 파일 배포'
         sudo rm -rf \$FE_DEPLOY_PATH/*
         sudo cp -r \$FE_STAGING_PATH/* \$FE_DEPLOY_PATH/
-        shopt -s extglob  # 1. extglob 기능을 켭니다.
-        sudo rm -rf \$FE_STAGING_PATH/!(nginx-default) # 2. 이제 이 명령어가 정상 작동합니다.
-        shopt -u extglob  # 3. (선택사항) 사용 후 다시 끄는 것이 좋습니다.
 
         echo '>> (Nginx) 서비스 재시작'
         sudo systemctl restart nginx
@@ -133,6 +131,7 @@ elif [ "$MODE" == "dev" ]; then
         echo '>> (BE) 새 애플리케이션 실행'
         nohup java -jar \$BE_JAR_PATH > \$BE_LOG_PATH 2>&1 &
     "
+    #
     if [ $? -ne 0 ]; then echo " 🚨 EC2에서 배포 스크립트 실패"; exit 1; fi
 
     # 7. 배포 완료

@@ -21,8 +21,8 @@ sudo apt-get install -y openjdk-21-jdk
 echo ">> (3/4) Nginx 설치..."
 sudo apt-get install -y nginx
 
-# --- 4. MySQL Server 8.0 설치 (DB용) ---
-echo ">> (4/4) MySQL Server 8.0 설치..."
+# --- 4. MySQL Server 설치 (DB용) ---
+echo ">> (4/4) MySQL Server 설치..."
 export DEBIAN_FRONTEND=noninteractive
 sudo apt-get install -y mysql-server
 
