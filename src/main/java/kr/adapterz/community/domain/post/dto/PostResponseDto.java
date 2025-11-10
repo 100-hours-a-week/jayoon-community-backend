@@ -16,9 +16,9 @@ public record PostResponseDto(
         Long likeCount,
         Long commentCount,
         Long viewCount,
-        List<String> imageUrls,
-        UserResponse user,
-        LocalDateTime createdAt
+        List<PostImageCreateDto> imageUrls,
+        LocalDateTime createdAt,
+        UserResponse user
 //        boolean isAuthor,
 //        boolean isLiked
 ) {
@@ -29,12 +29,12 @@ public record PostResponseDto(
             Long id,
             String nickname
     ) {
-        public static UserResponse from(Long id, String nickname) {
+        public static UserResponse of(Long id, String nickname) {
             return new UserResponse(id, nickname);
         }
     }
 
-    public static PostResponseDto from(Post post) {
+    public static PostResponseDto of(Post post, List<PostImageCreateDto> images) {
         return PostResponseDto.builder()
                 .id(post.getId())
                 .title(post.getTitle())
@@ -42,8 +42,8 @@ public record PostResponseDto(
                 .likeCount(post.getLikeCount())
                 .commentCount(post.getCommentCount())
                 .viewCount(post.getViewCount())
-                .imageUrls(List.of("test-image"))
-                .user(UserResponse.from(post.getUser().getId(), post.getUser().getNickname()))
+                .imageUrls(images)
+                .user(UserResponse.of(post.getUser().getId(), post.getUser().getNickname()))
                 .createdAt(post.getCreatedAt())
                 .build();
     }
