@@ -32,7 +32,7 @@ public class JwtManager {
 
     /**
      * Secret key로 사용할 key 필드를 할당합니다.
-     * <p>
+     *
      * '@Value' 주입 시기는 생성자 호출 시기 보다 빠르므로 '@PostConstruct'에서 처리합니다.
      */
     @PostConstruct
@@ -73,11 +73,9 @@ public class JwtManager {
 
     /**
      * Refresh token을 생성합니다. 세션처럼 관리만 하면 되기 때문에 단순 문자열인 UUID를 사용합니다.
-     * <p>
+     *
      * 이후 실제 JWT로 발급하여 관리할지, DB에서 관리할지, Redis에서 관리할지 고민입니다.
-     * <p>
      * JWT로 관리하면 만료일자를 서버에서 직접 관리하지 않아도 되는 장점이 있습니다.
-     * <p>
      * UUID로 관리하면 refresh token에 페이로드가 없기 때문에 단순하게 관리할 수 있고 유효성 검사가 비교적 간단하지만, 만료 일자를 쿠키에 넣어도 웹
      * 브라우저에서 이를 변경 할 수 있기 때문에 안전하지 않습니다.
      *
@@ -89,7 +87,7 @@ public class JwtManager {
 
     /**
      * 토큰의 유효성 검사를 진행합니다.
-     * <p>
+     *
      * ExpiredJwtException은 JwtException의 자식 예외입니다. 클라이언트 측에서 토큰 재발급 처리가 필요합니다.
      *
      * @param token
@@ -113,7 +111,7 @@ public class JwtManager {
 
     /**
      * Access token에서 userId를 추출합니다.
-     * <p>
+     *
      * ExpiredJwtException은 JwtException의 자식 예외입니다. 클라이언트 측에서 토큰 재발급 처리가 필요합니다.
      *
      * @param token

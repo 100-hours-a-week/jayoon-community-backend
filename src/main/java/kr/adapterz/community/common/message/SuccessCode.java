@@ -5,13 +5,10 @@ import lombok.RequiredArgsConstructor;
 
 /**
  * 모든 성공 코드를 관리하는 Enum.
- * <p>
+ *
  * [네이밍 규칙]
- * <p>
  * 1. 도메인_행위 형식으로 작성한다.
- * <p>
  * 2. 도메인은 API의 주체가 되는 비즈니스 개념(명사)을 의미한다.
- * <p>
  * 3. 행위는 GET, CREATE, UPDATE, DELETE 등 CRUD를 의미한다.
  */
 @Getter

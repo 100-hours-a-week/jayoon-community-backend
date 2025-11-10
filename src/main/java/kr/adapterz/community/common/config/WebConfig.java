@@ -36,7 +36,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     /**
      * 모든 핸들러 요청에서 인증을 진행할 AuthenticationFilter를 필터로 등록합니다.
-     * <p>
+     *
      * '@Bean'이 붙은 메서드는 자동으로 해당 메서드 이름을 하는 빈이 생성 됩니다. 이는 authenticationFilter를 필터에 등록하는 빈 생성
      *
      * @return

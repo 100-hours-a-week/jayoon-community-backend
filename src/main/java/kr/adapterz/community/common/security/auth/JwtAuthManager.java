@@ -37,9 +37,8 @@ public class JwtAuthManager implements AuthManager {
 
     /**
      * Access token과 Refresh token을 생성하여 헤더 쿠키에 넣습니다.
-     * <p>
+     *
      * 쿠키에 저장 되어 있는 기존 RT를 삭제합니다.
-     * <p>
      * AT, RT를 생성하여, RT는 서버에 저장하고, 두 토큰 모두 쿠키에 첨부합니다.
      *
      * @param userId
@@ -105,7 +104,7 @@ public class JwtAuthManager implements AuthManager {
 
     /**
      * 응답에 쿠키를 첨부합니다.
-     * <p>
+     *
      * cookie.setSecure(true); // HTTPS 설정을 추가하면 추가합니다.
      *
      * @param response

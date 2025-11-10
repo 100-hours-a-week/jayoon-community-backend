@@ -26,7 +26,7 @@ public class ImageController {
 
     /**
      * 수정용 pre-signed URL과 조회용 이미지 URL을 조회합니다.
-     * <p>
+     *
      * S3를 도입하기 전에는 클라이언트가 pre-signed URL을 통해 PUT /images?path= 로 저장하고 이미지 URL을 통해 조회하여 가져옵니다.
      */
     @GetMapping("/pre-signed-url")

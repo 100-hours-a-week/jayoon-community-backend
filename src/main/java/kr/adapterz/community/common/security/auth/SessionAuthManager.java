@@ -24,9 +24,8 @@ public class SessionAuthManager implements AuthManager {
 
     /**
      * session에 해당하는 userId를 저장합니다.
-     * <p>
+     *
      * 여러 기기나 세션 등의 접근으로 userId는 여러 개가 있을 수 있지만 세션은 독립적이기 때문에 이를 key로 사용합니다.
-     * <p>
      * (key, value) = (sessionId, userId)
      */
 
@@ -34,9 +33,8 @@ public class SessionAuthManager implements AuthManager {
 
     /**
      * 기존 세션을 제거하고, 새로운 세션을 생성합니다.
-     * <p>
+     *
      * - 요청 쿠키에 기존 인증 정보가 있다면 제거합니다
-     * <p>
      * - 독립적인 세션 아이디가 필요하므로 UUID를 통해 이를 생성합니다.
      *
      * @param userId
@@ -55,7 +53,7 @@ public class SessionAuthManager implements AuthManager {
 
     /**
      * 서버에서 관리 중인 세션과 브라우저에 저장된 인증 정보를 삭제합니다.
-     * <p>
+     *
      * - 브라우저에 저장 되어 있는 세션도 삭제해야 하므로, 이후에 컨트롤러에서 해당 이름을 갖는 쿠키를 삭제합니다.
      *
      * @param request
@@ -69,11 +67,9 @@ public class SessionAuthManager implements AuthManager {
 
     /**
      * 세션이 유효한지 검증하며, 인증된 유저의 userId를 반환합니다.
-     * <p>
+     *
      * 클라이언트의 요청 쿠키에서 sessionId를 찾고, 서버의 세션 저장소에서 이를 이용해 userId를 찾아 반환합니다.
-     * <p>
      * 존재하지 않는다면 401 응답을 합니다.
-     * <p>
      * 서버의 세션 저장소에 세션이 존재하지 않는 경우는 현재 서버를 재시동 하여 메모리가 날아가는 경우 밖에 없습니다.
      *
      * @param request
@@ -93,7 +89,7 @@ public class SessionAuthManager implements AuthManager {
 
     /**
      * 요청에서 쿠키를 찾습니다.
-     * <p>
+     *
      * 세션 아이디를 값으로 갖는 쿠키를 찾습니다.
      *
      * @param request
@@ -111,9 +107,8 @@ public class SessionAuthManager implements AuthManager {
 
     /**
      * 응답 쿠키에 세션 아이디를 추가합니다.
-     * <p>
+     *
      * SameSite는 Lax가 기본값입니다.
-     * <p>
      * cookie.setSecure(true); // 현재는 local이므로 HTTPS 사용하지 않음
      *
      * @param authInfo

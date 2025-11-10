@@ -22,11 +22,9 @@ public class AuthenticationFilter implements Filter {
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
     /**
      * key는 HTTP method(POST, GET 등)이고, value는 허용 리소스의 배열입니다.
-     * <p>
+     *
      * Pattern Matcher를 사용합니다. 예시는 다음과 같습니다.
-     * <p>
      * 예시: 만약 모든 GET 요청을 허용하고 싶다면 , HttpMethod.GET, Arrays.asList("/**")
-     * <p>
      * 예시: 게시글 목록 및 상세 조회는 허용하고 싶다면 , HttpMethod.GET, Arrays.asList("/posts", "/posts/*")
      */
     private final Map<HttpMethod, List<String>> PERMIT_ALL_PATHS = Map.of(

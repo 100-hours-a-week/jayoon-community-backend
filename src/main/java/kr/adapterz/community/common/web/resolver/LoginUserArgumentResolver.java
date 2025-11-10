@@ -13,9 +13,8 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver {
     /**
      * 파라미터를 검사합니다.
-     * <p>
+     *
      * 1. @LoginUser 어노테이션이 붙어있는가?
-     * <p>
      * 2. 파라미터의 타입이 Long인가?
      *
      * @param parameter the method parameter to check
@@ -30,9 +29,8 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
 
     /**
      * 요청 attribute에서 userId를 추출하여 반환합니다.
-     * <p>
+     *
      * 요청 응답 생성 후, userId attribute 추출
-     * <p>
      * 존재하지 않으면 null 반환, userId 반환
      *
      * @param parameter     the method parameter to resolve. This parameter must have previously
