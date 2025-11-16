@@ -7,9 +7,9 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import kr.adapterz.community.common.config.PermitAllProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
@@ -19,17 +19,8 @@ import org.springframework.util.AntPathMatcher;
 @RequiredArgsConstructor
 public class AuthenticationFilter implements Filter {
     private final AuthManager authManager;
+    private final PermitAllProperties permitAllProperties;
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
-    /**
-     * key는 HTTP method(POST, GET 등)이고, value는 허용 리소스의 배열입니다.
-     *
-     * Pattern Matcher를 사용합니다. 예시는 다음과 같습니다.
-     * 예시: 만약 모든 GET 요청을 허용하고 싶다면 , HttpMethod.GET, Arrays.asList("/**")
-     * 예시: 게시글 목록 및 상세 조회는 허용하고 싶다면 , HttpMethod.GET, Arrays.asList("/posts", "/posts/*")
-     */
-    private final Map<HttpMethod, List<String>> PERMIT_ALL_PATHS = Map.of(
-            HttpMethod.POST, Arrays.asList("/auth", "users")
-    );
 
     /**
      * 인증이 필요하지 않은 API를 제외하고, 모든 Handler(Rest Controller)에 오는 요청에 대해 인증을 진행합니다.
@@ -66,10 +57,12 @@ public class AuthenticationFilter implements Filter {
      * @return 허용된 요청이라면 true, 반대라면 false를 반환합니다.
      */
     private boolean isPermitted(HttpMethod method, String requestPath) {
-        List<String> permittedPaths = PERMIT_ALL_PATHS.get(method);
-        if (permittedPaths == null) {
+        Map<HttpMethod, List<String>> paths = permitAllProperties.getPaths();
+        if (paths == null) {
             return false;
         }
+
+        List<String> permittedPaths = paths.get(method);
         return permittedPaths.stream().anyMatch(path -> pathMatcher.match(path, requestPath));
     }
 }

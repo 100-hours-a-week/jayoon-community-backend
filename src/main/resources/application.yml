@@ -19,6 +19,15 @@ server:
   servlet:
     context-path: /api
 
+security:
+  permit-all-paths:
+    paths:
+      POST:
+        - /api/auth
+        - /api/users
+      GET:
+        - /**
+
 logging:
   level:
     org.hibernate.SQL: debug
