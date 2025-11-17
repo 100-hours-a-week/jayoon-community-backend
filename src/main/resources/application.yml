@@ -1,11 +1,6 @@
 spring:
-  datasource:
-    url: jdbc:mysql://127.0.0.1:3306/community?serverTimezone=UTC&useSSL=false
-    username: root
-    password: root0616
-    driver-class-name: com.mysql.cj.jdbc.Driver
   profiles:
-    active: jwt
+    active: dev,jwt
 
   jpa:
     hibernate:
@@ -27,6 +22,7 @@ security:
         - /api/users
       GET:
         - /**
+#        health
 
 logging:
   level:
