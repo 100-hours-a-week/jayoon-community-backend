@@ -5,3 +5,10 @@ spring:
     username: root
     password: root0616
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+# File Storage Settings
+file:
+  # 파일이 실제로 저장될 로컬 시스템 경로
+  upload-dir: ./uploads/images/
+  # 클라이언트가 이미지에 접근할 때 사용할 서버 기본 URL
+  base-url: http://localhost:8080
