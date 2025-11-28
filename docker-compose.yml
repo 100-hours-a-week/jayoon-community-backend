@@ -1,9 +1,7 @@
 # community-backend/docker-compose.yml
 services:
   be-app:
-    build:
-      context: ./
-      dockerfile: Dockerfile
+    image: jayoon7/be-image:latest
     container_name: be-app
     ports:
       - "8080:8080"

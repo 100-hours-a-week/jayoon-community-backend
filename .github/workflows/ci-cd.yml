@@ -22,8 +22,8 @@ jobs:
           password: ${{ secrets.DOCKER_TOKEN }}
       - name: Build and Push Docker Image
         run: |
-          docker build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/fe-image:latest .
-          docker push ${{ secrets.DOCKER_USERNAME }}/fe-image:latest
+          docker build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/be-image:latest .
+          docker push ${{ secrets.DOCKER_USERNAME }}/be-image:latest
 
   deploy:
     needs: build-and-push-image
