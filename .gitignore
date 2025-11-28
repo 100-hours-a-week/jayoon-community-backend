@@ -38,3 +38,6 @@ out/
 
 ### upload files ###
 uploads/
+
+### SSL ###
+scripts/ssl
