@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # --- (1) 사용자 설정 ---
-PEM_KEY="~/Downloads/community.pem"
-EC2_HOST="3.36.69.206"
+PEM_KEY="~/code/aws/community.pem"
+EC2_HOST="3.35.174.172"
 EC2_USER="ubuntu"
 
 # --- (2) 프로젝트 경로 설정 ---
@@ -11,13 +11,9 @@ BE_PROJECT_PATH=$(pwd) # 이 스크립트는 BE 프로젝트 루트에서 실행
 # dev 모드용 경로
 BE_BUILD_DIR="$BE_PROJECT_PATH/build/libs"
 REMOTE_BE_APP_DIR="/home/$EC2_USER/app/be"
-NGINX_CONFIG_FILE_PATH="$BE_PROJECT_PATH/scripts/config/nginx-default"
-FE_PROJECT_PATH="$BE_PROJECT_PATH/../community-frontend/public"
-REMOTE_FE_STAGING_DIR="/home/$EC2_USER/app/fe-staging"
-REMOTE_FE_DEPLOY_DIR="/var/www/html"
 
 # init 모드용 경로 (★ 수정 ★)
-INIT_FILE="init-ec2-ws.sh"
+INIT_FILE="init-ec2-was.sh"
 EC2_INIT_SCRIPT_PATH="$BE_PROJECT_PATH/scripts/$INIT_FILE"
 REMOTE_INIT_SCRIPT_PATH="/home/$EC2_USER/$INIT_FILE"
 
@@ -69,21 +65,30 @@ elif [ "$MODE" == "dev" ]; then
     echo ">> 빅뱅 배포(dev) 모드를 시작합니다..."
     echo "========================================"
 
-    # 3. FE 'public' 폴더 존재 여부 확인
-    echo " (3/7) FE 'public' 폴더를 찾습니다..."
-    if [ ! -d "$FE_PROJECT_PATH" ]; then echo " 🚨 FE 폴더 없음"; exit 1; fi
-    echo " ✅ FE 배포 대상: '$FE_PROJECT_PATH' 폴더의 *내용물*"
+    # 1. BE 프로젝트 빌드
+    echo " (1/7) Spring Boot 애플리케이션을 빌드합니다..."
+    cd $BE_PROJECT_PATH
+    ./gradlew clean build
+    if [ $? -ne 0 ]; then echo " 🚨 BE 빌드 실패"; exit 1; fi
+    echo " ✅ BE 빌드가 완료되었습니다."
 
-    # 4. Nginx 설정 파일 존재 여부 확인
-    echo " (4/7) Nginx 설정 파일을 찾습니다..."
-    if [ ! -f "$NGINX_CONFIG_FILE_PATH" ]; then echo " 🚨 Nginx 설정 파일 없음"; exit 1; fi
-    echo " ✅ Nginx 설정 파일 확인 완료."
+    # 2. 빌드된 BE JAR 파일 찾기
+    echo " (2/7) BE .jar 파일을 찾습니다..."
+    JAR_FILE=$(find "$BE_BUILD_DIR" -name "*.jar" -not -name "*-plain.jar" | head -n 1)
+    if [ -z "$JAR_FILE" ]; then echo " 🚨 .jar 파일 없음"; exit 1; fi
+    JAR_NAME=$(basename "$JAR_FILE")
+    echo " ✅ BE 배포 대상: $JAR_NAME"
+
+    # 3. EC2에 원격 디렉터리 생성
+    echo " (3/8) EC2에 배포 디렉터리를 생성합니다..."
+    ssh -i "$PEM_KEY" "$EC2_USER@$EC2_HOST" "mkdir -p $REMOTE_BE_APP_DIR"
+    if [ $? -ne 0 ]; then echo " 🚨 원격 디렉터리($REMOTE_BE_APP_DIR) 생성 실패"; exit 1; fi
+    echo " ✅ $REMOTE_BE_APP_DIR 디렉터리 확인 완료."
+
 
     # 5. EC2로 BE/FE/Nginx-Config 파일 전송
-    echo " (5/7) FE, Nginx-Config 파일을 EC2 인스턴스로 전송합니다..."
-    ssh -i "$PEM_KEY" "$EC2_USER@$EC2_HOST" "mkdir -p $REMOTE_BE_APP_DIR && mkdir -p $REMOTE_FE_STAGING_DIR"
-    scp -i "$PEM_KEY" -r "$FE_PROJECT_PATH"/* "$EC2_USER@$EC2_HOST:$REMOTE_FE_STAGING_DIR/"
-    scp -i "$PEM_KEY" "$NGINX_CONFIG_FILE_PATH" "$EC2_USER@$EC2_HOST:$REMOTE_FE_STAGING_DIR/nginx-default"
+    echo " (5/7) BE 파일을 EC2 인스턴스로 전송합니다..."
+    scp -i "$PEM_KEY" "$JAR_FILE" "$EC2_USER@$EC2_HOST:$REMOTE_BE_APP_DIR/$JAR_NAME"
     if [ $? -ne 0 ]; then echo " 🚨 파일 전송 실패"; exit 1; fi
     echo " ✅ 파일 전송이 완료되었습니다."
 
@@ -91,21 +96,16 @@ elif [ "$MODE" == "dev" ]; then
     echo " (6/7) EC2에 접속하여 BE 중지, FE/Nginx 배포, BE 재시작..."
     ssh -i "$PEM_KEY" "$EC2_USER@$EC2_HOST" "
         set -e
-        FE_STAGING_PATH=\"$REMOTE_FE_STAGING_DIR\"
-        FE_DEPLOY_PATH=\"$REMOTE_FE_DEPLOY_DIR\"
-        NGINX_CONFIG_STAGING_PATH=\"$REMOTE_FE_STAGING_DIR/nginx-default\"
-        NGINX_CONFIG_DEPLOY_PATH=\"/etc/nginx/sites-available/default\"
+        BE_APP_PORT=8080
+        BE_JAR_PATH=\"$REMOTE_BE_APP_DIR/$JAR_NAME\"
+        BE_LOG_PATH=\"$REMOTE_BE_APP_DIR/app.log\"
 
-        echo '>> (Nginx) 설정 파일 배포'
-        sudo cp \$NGINX_CONFIG_STAGING_PATH \$NGINX_CONFIG_DEPLOY_PATH
-        sudo rm -f \$NGINX_CONFIG_STAGING_PATH
+        echo '>> (BE) 기존 프로세스 종료'
+        fuser -k -n tcp \$BE_APP_PORT || true
+        sleep 2
 
-        echo '>> (FE) 파일 배포'
-        sudo rm -rf \$FE_DEPLOY_PATH/*
-        sudo cp -r \$FE_STAGING_PATH/* \$FE_DEPLOY_PATH/
-
-        echo '>> (Nginx) 서비스 재시작'
-        sudo systemctl restart nginx
+        echo '>> (BE) 새 애플리케이션 실행'
+        nohup java -jar -Dspring.profiles.active=prod,jwt \$BE_JAR_PATH > \$BE_LOG_PATH 2>&1 &
     "
     #
     if [ $? -ne 0 ]; then echo " 🚨 EC2에서 배포 스크립트 실패"; exit 1; fi
@@ -113,6 +113,7 @@ elif [ "$MODE" == "dev" ]; then
     # 7. 배포 완료
     echo " (7/7) 모든 배포 과정이 완료되었습니다. 🎉"
     echo " EC2 인스턴스(${EC2_HOST})에서 애플리케이션이 실행 중입니다."
+    echo " 로그 확인: ssh -i $PEM_KEY $EC2_USER@$EC2_HOST tail -f $REMOTE_BE_APP_DIR/app.log"
 
 else
     # ======================================================
@@ -121,9 +122,9 @@ else
     echo "🚨 잘못된 사용법입니다."
     echo ""
     echo "   EC2 초기 설정이 필요할 때:"
-    echo "   sh ws-deploy.sh init"
+    echo "   sh was-deploy.sh init"
     echo ""
     echo "   애플리케이션을 배포할 때:"
-    echo "   sh ws-deploy.sh dev"
+    echo "   sh was-deploy.sh dev"
     exit 1
 fi

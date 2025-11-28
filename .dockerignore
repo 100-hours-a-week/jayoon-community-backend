@@ -1,0 +1,20 @@
+# Git
+.git
+.gitignore
+
+# Gradle
+.gradle
+build/
+.gradletasknamecache
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+
+# Docker
+Dockerfile
+.dockerignore
