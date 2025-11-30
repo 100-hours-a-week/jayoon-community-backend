@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=MySQL # 메모리 DB 사용 및 MySQL 호환 모드 설정
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop # 테스트마다 테이블 생성/삭제
+    database-platform: org.hibernate.dialect.MySQLDialect # MySQL Dialect 명시
+    properties:
+      hibernate:
+        format_sql: true
+
+jwt:
+  secret: "thisisalongandsecuresecretkeyfortestingpurposesjayoonbe"
+  access-token-expiration-ms: 3600000 # 1시간
+  refresh-token-expiration-ms: 604800000 # 7일
+
+file:
+  upload-dir: ./uploads/images/
+  base-url: http://localhost:8080
