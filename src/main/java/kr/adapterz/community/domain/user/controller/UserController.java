@@ -4,7 +4,7 @@ import static kr.adapterz.community.common.message.SuccessCode.USER_CREATE_SUCCE
 
 import jakarta.validation.Valid;
 import kr.adapterz.community.common.response.ApiResponseDto;
-import kr.adapterz.community.domain.user.dto.CreateUserRequestDto;
+import kr.adapterz.community.domain.user.dto.UserCreateRequestDto;
 import kr.adapterz.community.domain.user.dto.UserResponseDto;
 import kr.adapterz.community.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ public class UserController {
      */
     @PostMapping
     public ResponseEntity<ApiResponseDto<UserResponseDto>> createUser(
-            @Valid @RequestBody CreateUserRequestDto request) {
+            @Valid @RequestBody UserCreateRequestDto request) {
         UserResponseDto newUser = userService.signup(request);
         ApiResponseDto<UserResponseDto> responseBody = ApiResponseDto.success(newUser,
                 USER_CREATE_SUCCESS.getMessage());

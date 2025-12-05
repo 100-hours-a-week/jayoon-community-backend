@@ -7,7 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
-import kr.adapterz.community.domain.user.dto.CreateUserRequestDto;
+import kr.adapterz.community.domain.user.dto.UserCreateRequestDto;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -45,7 +45,7 @@ public class User {
     protected User() {
     }
 
-    public static User from(CreateUserRequestDto req) {
+    public static User from(UserCreateRequestDto req) {
         return User.builder()
                 .nickname(req.nickname())
                 .profileImageUrl(req.profileImageUrl())

@@ -28,7 +28,7 @@
 
 #### users
 
-- [ ] POST /users 회원가입
+- [x] POST /users 회원가입
 - [ ] PATCH /users/me 회원정보 수정
     - 프로필 이미지, 닉네임, 비밀번호를 수정할 수 있습니다.
 - [ ] DELETE /users/me 회원 탈퇴

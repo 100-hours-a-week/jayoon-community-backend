@@ -11,7 +11,7 @@ import static org.mockito.Mockito.verify;
 
 import kr.adapterz.community.common.exception.dto.BadRequestException;
 import kr.adapterz.community.common.security.encoding.Encoder;
-import kr.adapterz.community.domain.user.dto.CreateUserRequestDto;
+import kr.adapterz.community.domain.user.dto.UserCreateRequestDto;
 import kr.adapterz.community.domain.user.dto.UserResponseDto;
 import kr.adapterz.community.domain.user.entity.User;
 import kr.adapterz.community.domain.user.entity.UserAuth;
@@ -48,7 +48,7 @@ class UserServiceTest {
     @Test
     void 회원가입_성공() {
         // given (조건이 주어지고,)
-        CreateUserRequestDto request = new CreateUserRequestDto("test@email.com", "password123",
+        UserCreateRequestDto request = new UserCreateRequestDto("test@email.com", "password123",
                 "testuser", "url");
         User savedUser = User.from(request);
         ReflectionTestUtils.setField(savedUser, "id", 1L); // savedUser 객체의 'id' 필드에 1L 값을 강제로 주입
@@ -87,7 +87,7 @@ class UserServiceTest {
     @Test
     void 회원가입_실패_이메일_중복() {
         // given
-        CreateUserRequestDto request = new CreateUserRequestDto("test@email.com", "password123",
+        UserCreateRequestDto request = new UserCreateRequestDto("test@email.com", "password123",
                 "testuser", "url");
         given(userAuthRepository.existsByEmail(request.email())).willReturn(true);
 
@@ -104,7 +104,7 @@ class UserServiceTest {
     @Test
     void 회원가입_실패_닉네임_중복() {
         // given
-        CreateUserRequestDto request = new CreateUserRequestDto("test@email.com", "password123",
+        UserCreateRequestDto request = new UserCreateRequestDto("test@email.com", "password123",
                 "testuser", "url");
         given(userAuthRepository.existsByEmail(request.email())).willReturn(false);
         given(userRepository.existsByNickname(request.nickname())).willReturn(true);

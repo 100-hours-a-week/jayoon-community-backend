@@ -8,7 +8,7 @@ import static kr.adapterz.community.common.message.ErrorCode.USER_NOT_FOUND;
 import kr.adapterz.community.common.exception.dto.BadRequestException;
 import kr.adapterz.community.common.exception.dto.NotFoundException;
 import kr.adapterz.community.common.security.encoding.Encoder;
-import kr.adapterz.community.domain.user.dto.CreateUserRequestDto;
+import kr.adapterz.community.domain.user.dto.UserCreateRequestDto;
 import kr.adapterz.community.domain.user.dto.UserResponseDto;
 import kr.adapterz.community.domain.user.entity.User;
 import kr.adapterz.community.domain.user.entity.UserAuth;
@@ -30,7 +30,7 @@ public class UserService {
      * 유저를 생성합니다.
      */
     @Transactional
-    public UserResponseDto signup(CreateUserRequestDto request) {
+    public UserResponseDto signup(UserCreateRequestDto request) {
         if (userAuthRepository.existsByEmail((request.email()))) {
             throw new BadRequestException(USER_EMAIL_ALREADY_EXISTED);
         }
