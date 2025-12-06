@@ -28,6 +28,7 @@ public enum ErrorCode {
 
     // Authentication
     AUTH_FAILURE("이메일 또는 비밀번호가 잘못되었습니다."),
+    PASSWORD_MISMATCH("비밀번호가 올바르지 않습니다."),
     TOKEN_EXPIRED("인증 토큰이 만료되었습니다."),
     TOKEN_INVALID("인증 토큰이 유효하지 않습니다."),
     INVALID_SESSION("유효하지 않는 세션 정보입니다."),

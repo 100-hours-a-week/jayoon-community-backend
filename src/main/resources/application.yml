@@ -35,7 +35,8 @@ logging:
 
 jwt:
   secret: "jaesangYSecretKeyjaesangYInProduction64BytesjaesangY"
-  access-token-expiration-ms: 1800000  # 30분
+  access-token-expiration-ms: 9999900000  # test
+  #  access-token-expiration-ms: 3600000  # 1시간
   refresh-token-expiration-ms: 2592000000 # 30일
 
 # File Storage Settings

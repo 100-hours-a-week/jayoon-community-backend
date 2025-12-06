@@ -1,5 +1,6 @@
 package kr.adapterz.community.domain.user.service;
 
+import static kr.adapterz.community.common.message.ErrorCode.PASSWORD_MISMATCH;
 import static kr.adapterz.community.common.message.ErrorCode.USER_AUTH_NOT_FOUND;
 import static kr.adapterz.community.common.message.ErrorCode.USER_EMAIL_ALREADY_EXISTED;
 import static kr.adapterz.community.common.message.ErrorCode.USER_NICKNAME_ALREADY_EXISTED;
@@ -10,6 +11,7 @@ import kr.adapterz.community.common.exception.dto.NotFoundException;
 import kr.adapterz.community.common.security.encoding.Encoder;
 import kr.adapterz.community.domain.user.dto.UserCreateRequestDto;
 import kr.adapterz.community.domain.user.dto.UserResponseDto;
+import kr.adapterz.community.domain.user.dto.UserUpdateRequestDto;
 import kr.adapterz.community.domain.user.entity.User;
 import kr.adapterz.community.domain.user.entity.UserAuth;
 import kr.adapterz.community.domain.user.repository.UserAuthRepository;
@@ -77,5 +79,39 @@ public class UserService {
     public UserAuth findUserAuthByEmail(String email) {
         return userAuthRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+    }
+
+    /**
+     * 회원정보를 수정합니다.
+     *
+     * 닉네임, 프로필 이미지 URL, 비밀번호를 수정할 수 있습니다.
+     * JPA의 Dirty checking은 @Transactional 내에 있는 엔티티 변경을 추적하여 자동으로 쿼리를 생성합니다.
+     * 때문에 명시적으로 update 쿼리를 작성하지 않아도 됩니다.
+     */
+    @Transactional
+    public void updateUser(Long userId, UserUpdateRequestDto request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+        UserAuth userAuth = userAuthRepository.findByUserId(userId)
+                .orElseThrow(() -> new NotFoundException(USER_AUTH_NOT_FOUND));
+
+        if (request.nickname() != null && !request.nickname().isBlank()) {
+            if (userRepository.existsByNickname(request.nickname()) && !user.getNickname()
+                    .equals(request.nickname())) {
+                throw new BadRequestException(USER_NICKNAME_ALREADY_EXISTED);
+            }
+            user.updateNickname(request.nickname());
+        }
+
+        user.updateProfileImageUrl(request.profileImageUrl());
+
+        if (request.currentPassword() != null && !request.currentPassword().isBlank() &&
+                request.updatedPassword() != null && !request.updatedPassword().isBlank()) {
+            if (!encoder.checkPassword(request.currentPassword(), userAuth.getPasswordHash())) {
+                throw new BadRequestException(PASSWORD_MISMATCH);
+            }
+            String newPasswordHash = encoder.encodePassword(request.updatedPassword());
+            userAuth.updatePasswordHash(newPasswordHash);
+        }
     }
 }

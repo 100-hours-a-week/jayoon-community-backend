@@ -1,7 +1,9 @@
 package kr.adapterz.community.common.exception.handler;
 
 import kr.adapterz.community.common.exception.dto.BadRequestException;
+import kr.adapterz.community.common.exception.dto.ForbiddenException;
 import kr.adapterz.community.common.exception.dto.NotFoundException;
+import kr.adapterz.community.common.exception.dto.UnauthorizedException;
 import kr.adapterz.community.common.response.ApiResponseDto;
 import kr.adapterz.community.common.response.ErrorDetails;
 import org.springframework.http.HttpStatus;
@@ -50,10 +52,31 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * HTTP status code 403 예외를 일괄적으로 처리합니다.
+     */
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<ApiResponseDto<Void>> handleForbiddenException(ForbiddenException ex) {
+        ErrorDetails errorDetails = ErrorDetails.of(ex.getHttpStatusValue());
+        ApiResponseDto<Void> response = ApiResponseDto.fail(errorDetails, ex.getMessage());
+        return new ResponseEntity<>(response, ex.getHttpStatus());
+    }
+
+    /**
      * HTTP status code 404 예외를 일괄적으로 처리합니다.
      */
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ApiResponseDto<Void>> handleNotFoundException(NotFoundException ex) {
+        ErrorDetails errorDetails = ErrorDetails.of(ex.getHttpStatusValue());
+        ApiResponseDto<Void> response = ApiResponseDto.fail(errorDetails, ex.getMessage());
+        return new ResponseEntity<>(response, ex.getHttpStatus());
+    }
+
+    /**
+     * HTTP status code 401 예외를 일괄적으로 처리합니다.
+     */
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ApiResponseDto<Void>> handleUnauthorizedException(
+            UnauthorizedException ex) {
         ErrorDetails errorDetails = ErrorDetails.of(ex.getHttpStatusValue());
         ApiResponseDto<Void> response = ApiResponseDto.fail(errorDetails, ex.getMessage());
         return new ResponseEntity<>(response, ex.getHttpStatus());

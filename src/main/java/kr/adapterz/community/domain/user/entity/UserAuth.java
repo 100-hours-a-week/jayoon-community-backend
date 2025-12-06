@@ -60,4 +60,8 @@ public class UserAuth {
                 .passwordHash(passwordHash)
                 .build();
     }
+
+    public void updatePasswordHash(String newPasswordHash) {
+        this.passwordHash = newPasswordHash;
+    }
 }
