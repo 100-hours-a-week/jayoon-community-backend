@@ -21,8 +21,13 @@ security:
         - /api/auth
         - /api/users
       GET:
-        - /**
-#        health
+        - /api/health
+      PUT:
+        - /api
+      PATCH:
+        - /api
+      DELETE:
+        - /api
 
 logging:
   level:
