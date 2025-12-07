@@ -12,6 +12,8 @@ import kr.adapterz.community.domain.post.dto.PostCreateRequestDto;
 import kr.adapterz.community.domain.post.dto.PostListResponseDto;
 import kr.adapterz.community.domain.post.dto.PostResponseDto;
 import kr.adapterz.community.domain.post.dto.PostUpdateRequestDto;
+import kr.adapterz.community.domain.post.dto.CommentListResponseDto;
+import kr.adapterz.community.domain.post.service.CommentService;
 import kr.adapterz.community.domain.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -32,6 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class PostController {
 
     private final PostService postService;
+    private final CommentService commentService;
 
     /**
      * 게시글을 생성합니다.
@@ -122,6 +125,29 @@ public class PostController {
         postService.deletePost(userId, postId);
         ApiResponseDto<Void> responseBody = ApiResponseDto.success(null,
                 POST_DELETE_SUCCESS.getMessage());
+        return ResponseEntity.ok(responseBody);
+    }
+
+    /**
+     * 특정 게시물의 댓글 목록을 조회합니다.
+     *
+     * @param postId
+     * @param limit
+     * @param cursor
+     * @param userId
+     * @return
+     */
+    @GetMapping("/{postId}/comments")
+    public ResponseEntity<ApiResponseDto<CommentListResponseDto>> getComments(
+        @PathVariable Long postId,
+        @RequestParam(defaultValue = "10") Long limit,
+        @RequestParam(required = false) Long cursor,
+        @LoginUser Long userId
+    ) {
+        CommentListResponseDto comments = commentService.findCommentsByPostId(postId, limit, cursor,
+            userId);
+        ApiResponseDto<CommentListResponseDto> responseBody = ApiResponseDto.success(comments,
+            POST_GET_SUCCESS.getMessage());
         return ResponseEntity.ok(responseBody);
     }
 }

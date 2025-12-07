@@ -1028,6 +1028,7 @@ HeaderCookie: Bearer access token
 
 200
 nextCursor는 마지막으로 읽은 게시글의 아이디입니다. 이 값을 cursor 파라미터로 사용하세요. 더 이상 불러올 게시물이 없다면 **null**을 반환합니다.
+totalCount는 해당 게시글의 전체 댓글 개수입니다.
 
 ```json
 {
@@ -1036,18 +1037,7 @@ nextCursor는 마지막으로 읽은 게시글의 아이디입니다. 이 값을
   "data": {
     "comments": [
       {
-        "id": 1,
-        "body": "본문이에요~",
-        "createdAt": "1997-01-01T00:00:00.000Z",
-        "user": {
-          "id": 1,
-          "nickname": "jayoon"
-        },
-        "isAuthor": true
-      },
-      // limit 개수만큼의 데이터
-      {
-        "id": 10,
+        "id": 20,
         "body": "본문이에요~",
         "createdAt": "1997-01-01T00:00:00.000Z",
         "user": {
@@ -1055,9 +1045,21 @@ nextCursor는 마지막으로 읽은 게시글의 아이디입니다. 이 값을
           "nickname": "jay"
         },
         "isAuthor": false
+      },
+      // limit 개수만큼의 데이터
+      {
+        "id": 11,
+        "body": "본문이에요~",
+        "createdAt": "1997-01-01T00:00:00.000Z",
+        "user": {
+          "id": 1,
+          "nickname": "jayoon"
+        },
+        "isAuthor": true
       }
     ],
-    "nextCursor": 10
+    "nextCursor": 11,
+    "totalCount": 52
   },
   "error": null
 }

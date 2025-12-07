@@ -22,8 +22,8 @@ security:
         - /api/users
       GET:
         - /api/health
-        - /api/posts/*
-        - /api/comments
+        - /api/posts/**
+        - /api/posts
       PUT:
         - /api
       PATCH:
