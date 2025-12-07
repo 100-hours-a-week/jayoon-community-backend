@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final PostImageRepository postImageRepository;
@@ -38,6 +38,7 @@ public class PostServiceImpl implements PostService {
      * @return
      */
     @Override
+    @Transactional
     public PostResponseDto createPost(PostCreateRequestDto request, Long userId) {
         User user = userService.findById(userId);
         Post newPost = Post.createFrom(user, request);
@@ -86,8 +87,9 @@ public class PostServiceImpl implements PostService {
      * @return
      */
     @Override
+    @Transactional
     public PostResponseDto editPost(Long userId, Long postId) {
-        return null;
+        return null; // Will be implemented later
     }
 
     /**
@@ -96,8 +98,9 @@ public class PostServiceImpl implements PostService {
      * @param postId
      */
     @Override
+    @Transactional
     public void deletePost(Long userId, Long postId) {
-
+        // Will be implemented later
     }
 
     /**
@@ -110,6 +113,7 @@ public class PostServiceImpl implements PostService {
      * @param imageUrls
      */
     @Override
+    @Transactional
     public List<PostImageCreateDto> createImage(Long postId, List<String> imageUrls) {
         if (imageUrls == null || imageUrls.isEmpty()) {
             return Collections.emptyList();
@@ -137,7 +141,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional
     public void deleteImage(Long postImageId) {
-        // 삭제
+        // Will be implemented later
     }
 }
