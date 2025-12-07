@@ -12,13 +12,16 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import kr.adapterz.community.domain.user.entity.User;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Getter
 @Table(name = "post_comment")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostComment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,4 +49,14 @@ public class PostComment {
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
+
+    private PostComment(User user, Post post, String body) {
+        this.user = user;
+        this.post = post;
+        this.body = body;
+    }
+
+    public static PostComment of(User user, Post post, String body) {
+        return new PostComment(user, post, body);
+    }
 }

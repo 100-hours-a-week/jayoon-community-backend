@@ -1153,13 +1153,11 @@ HeaderCookie: Bearer access token
 #### 성공
 
 200
-**Body**
-유저 경험을 위해 message를 삭제했습니다.
 
 ```json
 {
   "success": true,
-  "message": null,
+  "message": "댓글 생성이 성공적으로 완료 되었습니다.",
   "data": {
     "id": 1,
     "body": "본문이에요~",

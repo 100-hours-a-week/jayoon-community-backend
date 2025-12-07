@@ -1,5 +1,6 @@
 package kr.adapterz.community.domain.post.controller;
 
+import static kr.adapterz.community.common.message.SuccessCode.COMMENT_CREATE_SUCCESS;
 import static kr.adapterz.community.common.message.SuccessCode.POST_CREATE_SUCCESS;
 import static kr.adapterz.community.common.message.SuccessCode.POST_DELETE_SUCCESS;
 import static kr.adapterz.community.common.message.SuccessCode.POST_GET_SUCCESS;
@@ -8,11 +9,13 @@ import static kr.adapterz.community.common.message.SuccessCode.POST_UPDATE_SUCCE
 import jakarta.validation.Valid;
 import kr.adapterz.community.common.response.ApiResponseDto;
 import kr.adapterz.community.common.web.annotation.LoginUser;
+import kr.adapterz.community.domain.post.dto.CommentCreateRequestDto;
+import kr.adapterz.community.domain.post.dto.CommentListResponseDto;
+import kr.adapterz.community.domain.post.dto.CommentResponseDto;
 import kr.adapterz.community.domain.post.dto.PostCreateRequestDto;
 import kr.adapterz.community.domain.post.dto.PostListResponseDto;
 import kr.adapterz.community.domain.post.dto.PostResponseDto;
 import kr.adapterz.community.domain.post.dto.PostUpdateRequestDto;
-import kr.adapterz.community.domain.post.dto.CommentListResponseDto;
 import kr.adapterz.community.domain.post.service.CommentService;
 import kr.adapterz.community.domain.post.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -139,15 +142,36 @@ public class PostController {
      */
     @GetMapping("/{postId}/comments")
     public ResponseEntity<ApiResponseDto<CommentListResponseDto>> getComments(
-        @PathVariable Long postId,
-        @RequestParam(defaultValue = "10") Long limit,
-        @RequestParam(required = false) Long cursor,
-        @LoginUser Long userId
+            @PathVariable Long postId,
+            @RequestParam(defaultValue = "10") Long limit,
+            @RequestParam(required = false) Long cursor,
+            @LoginUser Long userId
     ) {
         CommentListResponseDto comments = commentService.findCommentsByPostId(postId, limit, cursor,
-            userId);
+                userId);
         ApiResponseDto<CommentListResponseDto> responseBody = ApiResponseDto.success(comments,
-            POST_GET_SUCCESS.getMessage());
+                POST_GET_SUCCESS.getMessage());
+        return ResponseEntity.ok(responseBody);
+    }
+
+    /**
+     * 특정 게시물에 댓글을 생성합니다.
+     *
+     * @param postId
+     * @param userId
+     * @param request
+     * @return
+     */
+    @PostMapping("/{postId}/comments")
+    public ResponseEntity<ApiResponseDto<CommentResponseDto>> createComment(
+            @PathVariable Long postId,
+            @LoginUser Long userId,
+            @Valid @RequestBody CommentCreateRequestDto request
+    ) {
+        CommentResponseDto newComment = commentService.createComment(postId, userId, request);
+        ApiResponseDto<CommentResponseDto> responseBody = ApiResponseDto.success(newComment,
+                COMMENT_CREATE_SUCCESS.getMessage());
         return ResponseEntity.ok(responseBody);
     }
 }
+    
