@@ -10,11 +10,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import kr.adapterz.community.common.exception.dto.UnauthorizedException;
+import kr.adapterz.community.common.security.CookieManager;
 import kr.adapterz.community.common.security.jwt.JwtDto;
 import kr.adapterz.community.common.security.jwt.JwtManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -22,9 +24,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class JwtAuthManager implements AuthManager {
     private final JwtManager jwtManager;
-
-    public static final String ACCESS_COOKIE_NAME = "ACCESS_TOKEN";
-    public static final String REFRESH_COOKIE_NAME = "REFRESH_TOKEN";
+    private final CookieManager cookieManager;
 
     @Value("${jwt.access-token-expiration-ms}")
     private long accessTokenExpirationMs;
@@ -35,63 +35,37 @@ public class JwtAuthManager implements AuthManager {
     private final Map<String, Long> refreshTokens = new ConcurrentHashMap<>();
 
 
-    /**
-     * Access token과 Refresh token을 생성하여 헤더 쿠키에 넣습니다.
-     *
-     * 쿠키에 저장 되어 있는 기존 RT를 삭제합니다.
-     * AT, RT를 생성하여, RT는 서버에 저장하고, 두 토큰 모두 쿠키에 첨부합니다.
-     *
-     * @param userId
-     * @param request
-     * @param response
-     */
     @Override
     public void login(Long userId, HttpServletRequest request, HttpServletResponse response) {
-        findCookie(request, REFRESH_COOKIE_NAME)
+        findCookie(request, CookieManager.REFRESH_TOKEN_COOKIE_NAME)
                 .ifPresent(cookie -> refreshTokens.remove(cookie.getValue()));
 
         JwtDto dto = jwtManager.generateTokens(userId);
         refreshTokens.put(dto.refreshToken(), userId);
-        addCookie(response, ACCESS_COOKIE_NAME, dto.accessToken(),
-                (int) accessTokenExpirationMs / 1000);
-        addRefreshTokenCookie(response, REFRESH_COOKIE_NAME, dto.refreshToken(),
-                (int) refreshTokenExpirationMs / 1000);
+
+        ResponseCookie accessTokenCookie = cookieManager.getAccessTokenCookie(dto.accessToken(), accessTokenExpirationMs / 1000);
+        ResponseCookie refreshTokenCookie = cookieManager.getRefreshTokenCookie(dto.refreshToken(), refreshTokenExpirationMs / 1000);
+
+        response.addHeader("Set-Cookie", accessTokenCookie.toString());
+        response.addHeader("Set-Cookie", refreshTokenCookie.toString());
     }
 
-    /**
-     * 쿠키에 있는 access token과 refresh token의 값을 비워두고, 만료 기한을 유효하지 않게 변경합니다.
-     *
-     * @param request
-     */
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response) {
-        findCookie(request, REFRESH_COOKIE_NAME)
+        findCookie(request, CookieManager.REFRESH_TOKEN_COOKIE_NAME)
                 .ifPresent(cookie -> refreshTokens.remove(cookie.getValue()));
 
-        clearCookie(response, ACCESS_COOKIE_NAME);
-        clearCookie(response, REFRESH_COOKIE_NAME);
+        response.addHeader("Set-Cookie", cookieManager.clearCookie(CookieManager.ACCESS_TOKEN_COOKIE_NAME, "/").toString());
+        response.addHeader("Set-Cookie", cookieManager.clearCookie(CookieManager.REFRESH_TOKEN_COOKIE_NAME, "/auth/refresh").toString());
     }
 
-    /**
-     * 쿠키에서 access token이 존재하는지 검사한 뒤, 유효성 검사 후 userId를 추출하여 반환합니다.
-     *
-     * @param request
-     * @return
-     */
     @Override
     public Long getAuthenticatedUserId(HttpServletRequest request) {
-        Cookie cookie = findCookie(request, ACCESS_COOKIE_NAME)
+        Cookie cookie = findCookie(request, CookieManager.ACCESS_TOKEN_COOKIE_NAME)
                 .orElseThrow(() -> new UnauthorizedException(TOKEN_INVALID));
         return jwtManager.getAuthenticatedUserIdFromToken(cookie.getValue());
     }
 
-    /**
-     * 요청에서 쿠키를 조회하여, 쿠키가 없을 때는 Optional.empty()를 반환하고, 존재할 때는 해당 쿠키를 Optional에 감싸서 반환합니다.
-     *
-     * @param request
-     * @param cookieName
-     * @return
-     */
     private Optional<Cookie> findCookie(HttpServletRequest request, String cookieName) {
         Cookie[] cookies = request.getCookies();
         if (cookies == null) {
@@ -100,44 +74,5 @@ public class JwtAuthManager implements AuthManager {
         return Arrays.stream(cookies)
                 .filter(cookie -> cookie.getName().equals(cookieName))
                 .findFirst();
-    }
-
-    /**
-     * 응답에 쿠키를 첨부합니다.
-     *
-     * cookie.setSecure(true); // HTTPS 설정을 추가하면 추가합니다.
-     *
-     * @param response
-     * @param cookieName
-     * @param value
-     * @param maxAgeSeconds
-     */
-    private void addCookie(HttpServletResponse response, String cookieName, String value,
-                           int maxAgeSeconds) {
-        Cookie cookie = new Cookie(cookieName, value);
-        cookie.setMaxAge(maxAgeSeconds);
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-        response.addCookie(cookie);
-    }
-
-    private void addRefreshTokenCookie(HttpServletResponse response, String cookieName,
-                                       String value,
-                                       int maxAgeSeconds) {
-        Cookie cookie = new Cookie(cookieName, value);
-        cookie.setMaxAge(maxAgeSeconds);
-        cookie.setPath("/api/auth/refresh");
-        cookie.setHttpOnly(true);
-        response.addCookie(cookie);
-    }
-
-    /**
-     * cookieName을 이름으로 갖는 응답의 쿠키를 만료시킵니다.
-     */
-    private void clearCookie(HttpServletResponse response, String cookieName) {
-        Cookie cookie = new Cookie(cookieName, null);
-        cookie.setMaxAge(0);
-        cookie.setPath("/");
-        response.addCookie(cookie);
     }
 }
