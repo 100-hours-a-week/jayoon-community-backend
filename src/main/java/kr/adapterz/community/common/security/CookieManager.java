@@ -26,16 +26,11 @@ public class CookieManager {
 
     private ResponseCookie createCookie(String name, String value, String path, long maxAge) {
         ResponseCookie.ResponseCookieBuilder builder = ResponseCookie.from(name, value)
-            .path(path)
-            .maxAge(maxAge)
-            .httpOnly(true);
+                .path(path)
+                .maxAge(maxAge)
+                .httpOnly(true);
 
-        if (isProductionProfile()) {
-            builder.secure(true).sameSite("None");
-        } else {
-            builder.sameSite("Lax");
-        }
-
+        builder.secure(true).sameSite("None");
         return builder.build();
     }
 
@@ -45,8 +40,8 @@ public class CookieManager {
 
     public ResponseCookie clearCookie(String name, String path) {
         return ResponseCookie.from(name, null)
-            .path(path)
-            .maxAge(0)
-            .build();
+                .path(path)
+                .maxAge(0)
+                .build();
     }
 }
