@@ -2,7 +2,9 @@ package kr.adapterz.community.domain.post.service;
 
 import static kr.adapterz.community.common.message.ErrorCode.POST_NOT_FOUND;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import kr.adapterz.community.common.exception.dto.NotFoundException;
 import kr.adapterz.community.domain.post.dto.PostCreateRequestDto;
 import kr.adapterz.community.domain.post.dto.PostImageCreateDto;
@@ -16,9 +18,11 @@ import kr.adapterz.community.domain.user.entity.User;
 import kr.adapterz.community.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final PostImageRepository postImageRepository;
@@ -40,7 +44,7 @@ public class PostServiceImpl implements PostService {
 
         Post savedPost = postRepository.save(newPost);
         List<PostImageCreateDto> images = createImage(savedPost.getId(), request.imageUrls());
-        return PostResponseDto.of(savedPost, images);
+        return PostResponseDto.of(savedPost, images, true);
     }
 
     /**
@@ -54,7 +58,8 @@ public class PostServiceImpl implements PostService {
         Post post = postRepository.findById(postId).orElseThrow(() -> new NotFoundException(
                 POST_NOT_FOUND));
         List<PostImageCreateDto> postImages = findPostImageByPostId(postId);
-        return PostResponseDto.of(post, postImages);
+        // This endpoint is public, so no user is logged in. isAuthor is always false.
+        return PostResponseDto.of(post, postImages, false);
     }
 
     /**
@@ -106,15 +111,29 @@ public class PostServiceImpl implements PostService {
      */
     @Override
     public List<PostImageCreateDto> createImage(Long postId, List<String> imageUrls) {
-        // post 존재 확인
+        if (imageUrls == null || imageUrls.isEmpty()) {
+            return Collections.emptyList();
+        }
 
-        // imageUrls 돌아가면서 전부 저장
-        return null;
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NotFoundException(POST_NOT_FOUND));
+
+        List<PostImage> postImages = imageUrls.stream()
+                .map(url -> PostImage.of(post, url))
+                .collect(Collectors.toList());
+
+        List<PostImage> savedPostImages = postImageRepository.saveAll(postImages);
+
+        return savedPostImages.stream()
+                .map(image -> new PostImageCreateDto(image.getId(), image.getPostImageUrl()))
+                .collect(Collectors.toList());
     }
 
     public List<PostImageCreateDto> findPostImageByPostId(Long postId) {
-        List<PostImage> postImage = postImageRepository.findAllByPostId(postId);
-        return null;
+        List<PostImage> postImages = postImageRepository.findAllByPostId(postId);
+        return postImages.stream()
+                .map(image -> new PostImageCreateDto(image.getId(), image.getPostImageUrl()))
+                .collect(Collectors.toList());
     }
 
     @Override

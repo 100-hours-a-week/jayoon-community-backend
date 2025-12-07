@@ -35,7 +35,7 @@
 
 #### posts
 
-- [ ] POST /posts
+- [x] POST /posts
 - [ ] (인증x)GET /posts 게시글 목록 조회
 - [ ] (인증x)GET /posts/:postId 게시글 상세 조회
     - 조회수 관련 로직을 상세 조회에서 진행합니다.

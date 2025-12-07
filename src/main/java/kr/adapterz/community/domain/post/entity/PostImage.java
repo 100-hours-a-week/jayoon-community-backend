@@ -39,4 +39,16 @@ public class PostImage {
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
+
+    protected PostImage() {
+    }
+
+    private PostImage(Post post, String postImageUrl) {
+        this.post = post;
+        this.postImageUrl = postImageUrl;
+    }
+
+    public static PostImage of(Post post, String imageUrl) {
+        return new PostImage(post, imageUrl);
+    }
 }
