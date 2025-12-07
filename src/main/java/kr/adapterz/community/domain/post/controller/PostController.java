@@ -1,6 +1,7 @@
 package kr.adapterz.community.domain.post.controller;
 
 import static kr.adapterz.community.common.message.SuccessCode.POST_CREATE_SUCCESS;
+import static kr.adapterz.community.common.message.SuccessCode.POST_DELETE_SUCCESS;
 import static kr.adapterz.community.common.message.SuccessCode.POST_GET_SUCCESS;
 
 import jakarta.validation.Valid;
@@ -13,6 +14,7 @@ import kr.adapterz.community.domain.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -79,6 +81,24 @@ public class PostController {
         PostListResponseDto posts = postService.findPostSummaries(limit, cursor);
         ApiResponseDto<PostListResponseDto> responseBody = ApiResponseDto.success(posts,
                 POST_GET_SUCCESS.getMessage());
+        return ResponseEntity.ok(responseBody);
+    }
+
+    /**
+     * 게시글을 삭제합니다.
+     *
+     * @param postId
+     * @param userId
+     * @return
+     */
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<ApiResponseDto<Void>> deletePost(
+        @PathVariable Long postId,
+        @LoginUser Long userId
+    ) {
+        postService.deletePost(userId, postId);
+        ApiResponseDto<Void> responseBody = ApiResponseDto.success(null,
+            POST_DELETE_SUCCESS.getMessage());
         return ResponseEntity.ok(responseBody);
     }
 
