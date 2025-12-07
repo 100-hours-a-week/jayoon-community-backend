@@ -78,7 +78,7 @@ public class UserService {
     }
 
     public UserAuth findUserAuthByEmail(String email) {
-        return userAuthRepository.findByEmail(email)
+        return userAuthRepository.findByEmailAndDeletedAtIsNull(email)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
     }
 

@@ -28,9 +28,11 @@ public class AuthServiceImpl implements AuthService {
     public LoginResponseDto login(LoginRequestDto dto) {
         UserAuth userAuth = userService.findUserAuthByEmail(dto.email());
         String passwordHash = userAuth.getPasswordHash();
+
         if (!encoder.checkPassword(dto.password(), passwordHash)) {
             throw new UnauthorizedException(AUTH_FAILURE);
         }
+        
         User user = userService.findById(userAuth.getUser().getId());
         return LoginResponseDto.of(userAuth.getEmail(), user);
     }
