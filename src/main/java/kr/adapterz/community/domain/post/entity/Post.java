@@ -130,4 +130,14 @@ public class Post {
             this.images.addAll(newImages);
         }
     }
+
+    public void incrementLikeCount() {
+        this.likeCount++;
+    }
+
+    public void decrementLikeCount() {
+        if (this.likeCount > 0) {
+            this.likeCount--;
+        }
+    }
 }

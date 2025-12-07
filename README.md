@@ -38,7 +38,7 @@
 - [x] POST /posts
 - [x] (인증x)GET /posts 게시글 목록 조회
 - [x] (인증x)GET /posts/:postId 게시글 상세 조회
-    - 조회수 관련 로직을 상세 조회에서 진행합니다.
+    - [ ] 조회수 관련 로직을 상세 조회에서 진행합니다.
 - [x] DELETE /posts/:postId 게시글 삭제
 - [x] PATCH /posts/:postId 게시글 수정
 
@@ -48,8 +48,8 @@
 - [x] PUT /posts/:postId/comments/:commentId 댓글 수정
 - [x] DELETE /posts/:postId/comments/:commentId 댓글 삭제
 
-- [ ] PUT /posts/:postId/likes 좋아요 생성 또는 삭제.
-    - 좋아요를 누를 때는 클라이언트의 상태를 믿지 않으므로 POST 또는 DELETE를 보내는 것이 올바르지 않다고 생각합니다.
+- [x] POST /posts/:postId/likes 좋아요 생성
+- [x] DELETE /posts/:postId/likes 좋아요 삭제.
 
 #### auth
 
@@ -68,5 +68,5 @@ API Gateway와 Lambda를 통해 개발 되었습니다. ALB를 통해 /images에
 
 ---
 
-- [ ] 세션, 쿠키
-- [ ] JWT
+- [x] 세션, 쿠키
+- [x] JWT

@@ -990,6 +990,146 @@ postId: Number, 1
 }
 ```
 
+## 게시글 좋아요 POST /posts/:postId/like
+
+### 요청
+
+#### Header
+
+HeaderCookie: Bearer access token
+
+#### Path variables
+
+postId: Number, 1
+
+#### Query parameters
+
+없음
+
+#### Body
+
+없음
+
+### 응답
+
+---
+
+#### 성공
+
+200
+
+**Body**
+
+```json
+{
+  "success": true,
+  "message": null,
+  "data": {
+    "postId": 1,
+    "likeCount": 11
+  },
+  "error": null
+}
+```
+
+#### 실패
+
+401
+
+```json
+{
+  "success": false,
+  "message": "존재하지 않는 인증 정보입니다.",
+  "data": null,
+  "error": {
+    "statusCode": "401"
+  }
+}
+```
+
+404
+
+```json
+{
+  "success": false,
+  "message": "요청한 리소스가 존재하지 않습니다",
+  "data": null,
+  "error": {
+    "statusCode": "404"
+  }
+}
+```
+
+## 게시글 좋아요 취소 DELETE /posts/:postId/like
+
+### 요청
+
+#### Header
+
+HeaderCookie: Bearer access token
+
+#### Path variables
+
+postId: Number, 1
+
+#### Query parameters
+
+없음
+
+#### Body
+
+없음
+
+### 응답
+
+---
+
+#### 성공
+
+200
+
+**Body**
+
+```json
+{
+  "success": true,
+  "message": null,
+  "data": {
+    "postId": 1,
+    "likeCount": 10
+  },
+  "error": null
+}
+```
+
+#### 실패
+
+401
+
+```json
+{
+  "success": false,
+  "message": "존재하지 않는 인증 정보입니다.",
+  "data": null,
+  "error": {
+    "statusCode": "401"
+  }
+}
+```
+
+404
+
+```json
+{
+  "success": false,
+  "message": "요청한 리소스가 존재하지 않습니다",
+  "data": null,
+  "error": {
+    "statusCode": "404"
+  }
+}
+```
+
 ## 댓글 목록 조회(인피니티 스크롤링) GET /posts/:postId/comments
 
 - 첫 번째 요청: GET /posts/:postId/comments?limit=10

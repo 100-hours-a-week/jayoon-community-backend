@@ -30,15 +30,30 @@ public class PostLike {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+        @CreationTimestamp
 
-    protected PostLike() {
+        @Column(name = "created_at", nullable = false, updatable = false)
+
+        private LocalDateTime createdAt;
+
+    
+
+        protected PostLike() {
+
+        }
+
+    
+
+        public PostLike(User user, Post post) {
+
+            this.id = new PostLikeId(user.getId(), post.getId());
+
+            this.user = user;
+
+            this.post = post;
+
+        }
+
     }
 
-    public PostLike(User user, Post post) {
-        this.user = user;
-        this.post = post;
-    }
-}
+    

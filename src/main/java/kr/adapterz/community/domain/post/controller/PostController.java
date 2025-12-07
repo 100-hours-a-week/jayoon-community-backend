@@ -16,10 +16,12 @@ import kr.adapterz.community.domain.post.dto.CommentListResponseDto;
 import kr.adapterz.community.domain.post.dto.CommentResponseDto;
 import kr.adapterz.community.domain.post.dto.CommentUpdateRequestDto;
 import kr.adapterz.community.domain.post.dto.PostCreateRequestDto;
+import kr.adapterz.community.domain.post.dto.PostLikeCountResponseDto;
 import kr.adapterz.community.domain.post.dto.PostListResponseDto;
 import kr.adapterz.community.domain.post.dto.PostResponseDto;
 import kr.adapterz.community.domain.post.dto.PostUpdateRequestDto;
 import kr.adapterz.community.domain.post.service.CommentService;
+import kr.adapterz.community.domain.post.service.LikeService;
 import kr.adapterz.community.domain.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -41,6 +43,7 @@ public class PostController {
 
     private final PostService postService;
     private final CommentService commentService;
+    private final LikeService likeService;
 
     /**
      * 게시글을 생성합니다.
@@ -135,6 +138,38 @@ public class PostController {
     }
 
     /**
+     * 게시글에 좋아요를 답니다.
+     *
+     * @param postId
+     * @param userId
+     * @return
+     */
+    @PostMapping("/{postId}/like")
+    public ResponseEntity<ApiResponseDto<PostLikeCountResponseDto>> createLike(
+            @PathVariable Long postId,
+            @LoginUser Long userId
+    ) {
+        PostLikeCountResponseDto response = likeService.createLike(postId, userId);
+        return ResponseEntity.ok(ApiResponseDto.success(response, null));
+    }
+
+    /**
+     * 게시물에 대한 좋아요를 취소합니다.
+     *
+     * @param postId
+     * @param userId
+     * @return
+     */
+    @DeleteMapping("/{postId}/like")
+    public ResponseEntity<ApiResponseDto<PostLikeCountResponseDto>> deleteLike(
+            @PathVariable Long postId,
+            @LoginUser Long userId
+    ) {
+        PostLikeCountResponseDto response = likeService.deleteLike(postId, userId);
+        return ResponseEntity.ok(ApiResponseDto.success(response, null));
+    }
+
+    /**
      * 특정 게시물의 댓글 목록을 조회합니다.
      *
      * @param postId
@@ -210,13 +245,13 @@ public class PostController {
      */
     @DeleteMapping("/{postId}/comments/{commentId}")
     public ResponseEntity<ApiResponseDto<Void>> deleteComment(
-        @PathVariable Long postId,
-        @PathVariable Long commentId,
-        @LoginUser Long userId
+            @PathVariable Long postId,
+            @PathVariable Long commentId,
+            @LoginUser Long userId
     ) {
         commentService.deleteComment(postId, commentId, userId);
         ApiResponseDto<Void> responseBody = ApiResponseDto.success(null,
-            COMMENT_DELETE_SUCCESS.getMessage());
+                COMMENT_DELETE_SUCCESS.getMessage());
         return ResponseEntity.ok(responseBody);
     }
 }
