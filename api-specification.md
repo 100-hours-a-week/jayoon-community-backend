@@ -226,6 +226,17 @@ set-cookie "refreshToken": "df...", httpOnly
 }
 ```
 
+```json
+{
+  "success": false,
+  "message": "비밀번호가 일치하지 않습니다.",
+  "data": null,
+  "error": {
+    "statusCode": "400"
+  }
+}
+```
+
 401
 
 ```json
@@ -339,6 +350,17 @@ implementations to reject the request.
 }
 ```
 
+```json
+{
+  "success": false,
+  "message": "비밀번호가 잘못 되었습니다.",
+  "data": null,
+  "error": {
+    "statusCode": "400"
+  }
+}
+```
+
 401
 
 ```json
@@ -348,19 +370,6 @@ implementations to reject the request.
   "data": null,
   "error": {
     "statusCode": "401"
-  }
-}
-```
-
-403
-
-```json
-{
-  "success": false,
-  "message": "비밀번호가 잘못 되었습니다.",
-  "data": null,
-  "error": {
-    "statusCode": "403"
   }
 }
 ```
