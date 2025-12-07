@@ -10,6 +10,7 @@ import kr.adapterz.community.domain.post.dto.PostCreateRequestDto;
 import kr.adapterz.community.domain.post.dto.PostImageCreateDto;
 import kr.adapterz.community.domain.post.dto.PostListResponseDto;
 import kr.adapterz.community.domain.post.dto.PostResponseDto;
+import kr.adapterz.community.domain.post.dto.PostSummaryResponseDto;
 import kr.adapterz.community.domain.post.entity.Post;
 import kr.adapterz.community.domain.post.entity.PostImage;
 import kr.adapterz.community.domain.post.repository.PostImageRepository;
@@ -17,6 +18,9 @@ import kr.adapterz.community.domain.post.repository.PostRepository;
 import kr.adapterz.community.domain.user.entity.User;
 import kr.adapterz.community.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -78,8 +82,30 @@ public class PostServiceImpl implements PostService {
      * @return
      */
     @Override
-    public PostListResponseDto findPostSummaries(/*Long limit, Long cursor*/) {
-        return null;
+    public PostListResponseDto findPostSummaries(Long limit, Long cursor) {
+        Pageable pageable = PageRequest.of(0, limit.intValue());
+        List<Post> posts;
+
+        if (cursor == null) {
+            posts = postRepository.findAll(
+                            PageRequest.of(0, limit.intValue(), Sort.by(Sort.Direction.DESC, "id")))
+                    .getContent();
+        } else {
+            posts = postRepository.findByIdLessThanOrderByIdDesc(cursor, pageable);
+        }
+
+        List<PostSummaryResponseDto> postSummaries = posts.stream()
+                .map(PostSummaryResponseDto::from)
+                .collect(Collectors.toList());
+
+        Long nextCursor = null;
+        if (!posts.isEmpty() && posts.size() == limit) {
+            nextCursor = posts.get(posts.size() - 1).getId();
+        }
+
+        long totalCount = postRepository.count();
+
+        return new PostListResponseDto(postSummaries, nextCursor, totalCount);
     }
 
     /**

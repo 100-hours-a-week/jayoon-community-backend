@@ -1,4 +1,10 @@
 package kr.adapterz.community.domain.post.dto;
 
-public record PostListResponseDto() {
+import java.util.List;
+
+public record PostListResponseDto(
+        List<PostSummaryResponseDto> posts,
+        Long nextCursor,
+        Long totalCount
+) {
 }

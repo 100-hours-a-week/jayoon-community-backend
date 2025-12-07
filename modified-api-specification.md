@@ -558,7 +558,7 @@ HeaderCookie: Bearer access token
 #### 성공
 
 200
-nextCursor는 마지막으로 읽은 게시글의 아이디입니다. 이 값을 cursor 파라미터로 사용하세요. 더 이상 불러올 게시물이 없다면 **null**을 반환합니다.
+nextCursor는 마지막으로 읽은 게시글의 아이디입니다. 이 값을 cursor 파라미터로 사용하세요. 더 이상 불러올 게시물이 없다면 **null**을 반환합니다. totalCount는 전체 게시글의 개수입니다.
 
 ```json
 {
@@ -567,8 +567,8 @@ nextCursor는 마지막으로 읽은 게시글의 아이디입니다. 이 값을
   "data": {
     "posts": [
       {
-        "id": 1,
-        "title": "제목 1",
+        "id": 20,
+        "title": "제목 20",
         "likeCount": 1,
         "commentCount": 1,
         "viewCount": 1,
@@ -579,10 +579,10 @@ nextCursor는 마지막으로 읽은 게시글의 아이디입니다. 이 값을
           "profileImageUrl": "url"
         }
       },
-      // limit 개수만큼의 데이터
+      // limit만큼의 데이터
       {
-        "id": 10,
-        "title": "제목 10",
+        "id": 11,
+        "title": "제목 11",
         "likeCount": 1,
         "commentCount": 1,
         "viewCount": 1,
@@ -594,7 +594,8 @@ nextCursor는 마지막으로 읽은 게시글의 아이디입니다. 이 값을
         }
       }
     ],
-    "nextCursor": 10
+    "nextCursor": 11,
+    "totalCount": 150
   },
   "error": null
 }

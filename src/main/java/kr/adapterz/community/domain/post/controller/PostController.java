@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import kr.adapterz.community.common.response.ApiResponseDto;
 import kr.adapterz.community.common.web.annotation.LoginUser;
 import kr.adapterz.community.domain.post.dto.PostCreateRequestDto;
+import kr.adapterz.community.domain.post.dto.PostListResponseDto;
 import kr.adapterz.community.domain.post.dto.PostResponseDto;
 import kr.adapterz.community.domain.post.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -58,6 +60,24 @@ public class PostController {
     ) {
         PostResponseDto post = postService.findPostDetailById(postId, userId);
         ApiResponseDto<PostResponseDto> responseBody = ApiResponseDto.success(post,
+                POST_GET_SUCCESS.getMessage());
+        return ResponseEntity.ok(responseBody);
+    }
+
+    /**
+     * 게시글 목록을 조회합니다.
+     *
+     * @param limit
+     * @param cursor
+     * @return
+     */
+    @GetMapping
+    public ResponseEntity<ApiResponseDto<PostListResponseDto>> getPosts(
+            @RequestParam(defaultValue = "10") Long limit,
+            @RequestParam(required = false) Long cursor
+    ) {
+        PostListResponseDto posts = postService.findPostSummaries(limit, cursor);
+        ApiResponseDto<PostListResponseDto> responseBody = ApiResponseDto.success(posts,
                 POST_GET_SUCCESS.getMessage());
         return ResponseEntity.ok(responseBody);
     }

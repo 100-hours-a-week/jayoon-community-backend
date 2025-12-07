@@ -15,7 +15,7 @@ public interface PostService {
     PostResponseDto findPostDetailById(Long postId, Long userId);
 
     // 게시물 목록 조회
-    PostListResponseDto findPostSummaries();
+    PostListResponseDto findPostSummaries(Long limit, Long cursor);
 
     // 게시물 수정
     PostResponseDto editPost(Long userId, Long postId);

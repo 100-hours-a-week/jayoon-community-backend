@@ -1,5 +1,6 @@
 package kr.adapterz.community.domain.post.dto;
 
+import kr.adapterz.community.domain.post.entity.Post;
 import java.time.LocalDateTime;
 
 /**
@@ -22,6 +23,18 @@ public record PostSummaryResponseDto(
         public static UserDto of(Long id, String nickname, String profileImageUrl) {
             return new UserDto(id, nickname, profileImageUrl);
         }
+    }
+
+    public static PostSummaryResponseDto from(Post post) {
+        return new PostSummaryResponseDto(
+                post.getId(),
+                post.getTitle(),
+                post.getLikeCount(),
+                post.getCommentCount(),
+                post.getViewCount(),
+                post.getCreatedAt(),
+                UserDto.of(post.getUser().getId(), post.getUser().getNickname(), post.getUser().getProfileImageUrl())
+        );
     }
     /**
      *  "data": {
