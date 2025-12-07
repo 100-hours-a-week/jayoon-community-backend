@@ -55,12 +55,14 @@ public class PostServiceImpl implements PostService {
      * @return
      */
     @Override
-    public PostResponseDto findPostDetailById(Long postId) {
+    public PostResponseDto findPostDetailById(Long postId, Long userId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new NotFoundException(
                 POST_NOT_FOUND));
         List<PostImageCreateDto> postImages = findPostImageByPostId(postId);
-        // This endpoint is public, so no user is logged in. isAuthor is always false.
-        return PostResponseDto.of(post, postImages, false);
+
+        boolean isAuthor = (userId != null) && post.getUser().getId().equals(userId);
+
+        return PostResponseDto.of(post, postImages, isAuthor);
     }
 
     /**

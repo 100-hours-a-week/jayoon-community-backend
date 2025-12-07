@@ -12,7 +12,7 @@ public interface PostService {
     PostResponseDto createPost(PostCreateRequestDto postCreateRequestDto, Long userId);
 
     // 게시물 상세 조회
-    PostResponseDto findPostDetailById(Long postId);
+    PostResponseDto findPostDetailById(Long postId, Long userId);
 
     // 게시물 목록 조회
     PostListResponseDto findPostSummaries();
