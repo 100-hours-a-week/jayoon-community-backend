@@ -74,12 +74,12 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         // 60초 * 60 = 1 hour
-        long maxAge = 60 * 60;
+        long maxAge = 3600L;
         // 모든 경로(/)에 대해 CORS 설정을 적용합니다.
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:5500", "http://127.0.0.1:5500") // Live Server
-                .allowedOrigins("http://localhost:3000", "http://127.0.0.1:3000") // Local FE server
-                .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE")
+                .allowedOrigins("http://localhost:3000", "https://localhost:3000",
+                        "http://guidey.site", "https://guidey.site")
+                .allowedMethods("*")
                 .allowedHeaders("*")
                 // 쿠키/인증 정보를 요청에 포함할 수 있도록 허용합니다.
                 // (httpOnly 쿠키를 사용하려면 true로 설정해야 합니다)
