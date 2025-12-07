@@ -46,7 +46,7 @@
 - [x] (인증x)GET /posts/:postId/comments 댓글 목록 조회
     - 댓글을 단일 조회가 없습니다.
 - [x] PUT /posts/:postId/comments/:commentId 댓글 수정
-- [ ] DELETE /posts/:postId/comments/:commentId 댓글 삭제
+- [x] DELETE /posts/:postId/comments/:commentId 댓글 삭제
 
 - [ ] PUT /posts/:postId/likes 좋아요 생성 또는 삭제.
     - 좋아요를 누를 때는 클라이언트의 상태를 믿지 않으므로 POST 또는 DELETE를 보내는 것이 올바르지 않다고 생각합니다.

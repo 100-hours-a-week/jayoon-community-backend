@@ -1,6 +1,7 @@
 package kr.adapterz.community.domain.post.controller;
 
 import static kr.adapterz.community.common.message.SuccessCode.COMMENT_CREATE_SUCCESS;
+import static kr.adapterz.community.common.message.SuccessCode.COMMENT_DELETE_SUCCESS;
 import static kr.adapterz.community.common.message.SuccessCode.COMMENT_UPDATE_SUCCESS;
 import static kr.adapterz.community.common.message.SuccessCode.POST_CREATE_SUCCESS;
 import static kr.adapterz.community.common.message.SuccessCode.POST_DELETE_SUCCESS;
@@ -196,6 +197,26 @@ public class PostController {
                 request);
         ApiResponseDto<CommentResponseDto> responseBody = ApiResponseDto.success(updatedComment,
                 COMMENT_UPDATE_SUCCESS.getMessage());
+        return ResponseEntity.ok(responseBody);
+    }
+
+    /**
+     * 특정 댓글을 삭제합니다.
+     *
+     * @param postId
+     * @param commentId
+     * @param userId
+     * @return
+     */
+    @DeleteMapping("/{postId}/comments/{commentId}")
+    public ResponseEntity<ApiResponseDto<Void>> deleteComment(
+        @PathVariable Long postId,
+        @PathVariable Long commentId,
+        @LoginUser Long userId
+    ) {
+        commentService.deleteComment(postId, commentId, userId);
+        ApiResponseDto<Void> responseBody = ApiResponseDto.success(null,
+            COMMENT_DELETE_SUCCESS.getMessage());
         return ResponseEntity.ok(responseBody);
     }
 }

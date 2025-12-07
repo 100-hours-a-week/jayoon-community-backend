@@ -38,4 +38,13 @@ public interface CommentService {
      * @return
      */
     CommentResponseDto updateComment(Long postId, Long commentId, Long userId, CommentUpdateRequestDto request);
+
+    /**
+     * 특정 댓글을 삭제합니다.
+     *
+     * @param postId
+     * @param commentId
+     * @param userId
+     */
+    void deleteComment(Long postId, Long commentId, Long userId);
 }

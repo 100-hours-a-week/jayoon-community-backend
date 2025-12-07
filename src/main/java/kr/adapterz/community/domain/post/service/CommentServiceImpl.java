@@ -74,6 +74,23 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
+    public void deleteComment(Long postId, Long commentId, Long userId) {
+        PostComment comment = postCommentRepository.findById(commentId)
+                .orElseThrow(() -> new NotFoundException(COMMENT_NOT_FOUND));
+
+        if (!comment.getPost().getId().equals(postId)) {
+            throw new NotFoundException(COMMENT_NOT_FOUND);
+        }
+
+        if (!comment.getUser().getId().equals(userId)) {
+            throw new NotFoundException(COMMENT_NOT_FOUND);
+        }
+
+        postCommentRepository.delete(comment);
+    }
+
+    @Override
     public CommentListResponseDto findCommentsByPostId(Long postId, Long limit, Long cursor,
                                                        Long loggedInUserId) {
         if (!postRepository.existsById(postId)) {
