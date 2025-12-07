@@ -41,6 +41,7 @@ public class CommentServiceImpl implements CommentService {
 
         PostComment newComment = PostComment.of(user, post, request.body());
         PostComment savedComment = postCommentRepository.save(newComment);
+        post.incrementCommentCount();
 
         return CommentResponseDto.of(savedComment, userId);
     }
@@ -76,6 +77,8 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public void deleteComment(Long postId, Long commentId, Long userId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NotFoundException(POST_NOT_FOUND));
         PostComment comment = postCommentRepository.findById(commentId)
                 .orElseThrow(() -> new NotFoundException(COMMENT_NOT_FOUND));
 
@@ -87,6 +90,7 @@ public class CommentServiceImpl implements CommentService {
             throw new NotFoundException(COMMENT_NOT_FOUND);
         }
 
+        post.decrementCommentCount();
         postCommentRepository.delete(comment);
     }
 
