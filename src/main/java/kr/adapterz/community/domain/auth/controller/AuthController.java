@@ -1,5 +1,7 @@
 package kr.adapterz.community.domain.auth.controller;
 
+import static kr.adapterz.community.common.message.SuccessCode.AUTH_LOGOUT_SUCCESS; // Import AUTH_LOGOUT_SUCCESS
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -10,6 +12,7 @@ import kr.adapterz.community.domain.auth.dto.LoginResponseDto;
 import kr.adapterz.community.domain.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping; // Import DeleteMapping
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,6 +46,25 @@ public class AuthController {
 
         ApiResponseDto<LoginResponseDto> responseBody = ApiResponseDto.success(loginResponseDto,
                 "로그인에 성공하였습니다.");
+        return ResponseEntity.ok().body(responseBody);
+    }
+
+    /**
+     * 로그아웃을 진행합니다.
+     *
+     * @param request
+     * @param response
+     * @return
+     */
+    @DeleteMapping
+    public ResponseEntity<ApiResponseDto<?>> logout(
+            HttpServletRequest request,
+            HttpServletResponse response) {
+
+        authService.logout(request, response);
+
+        ApiResponseDto<?> responseBody = ApiResponseDto.success(null,
+                AUTH_LOGOUT_SUCCESS.getMessage());
         return ResponseEntity.ok().body(responseBody);
     }
 }

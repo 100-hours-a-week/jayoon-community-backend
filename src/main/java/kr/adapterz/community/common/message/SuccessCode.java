@@ -24,6 +24,9 @@ public enum SuccessCode {
     USER_UPDATE_SUCCESS("회원정보 수정이 성공적으로 완료되었습니다."),
     USER_DELETE_SUCCESS("회원탈퇴가 성공적으로 완료되었습니다."),
 
+    // Auth
+    AUTH_LOGOUT_SUCCESS("로그아웃이 성공적으로 완료되었습니다."),
+
     // Image
     PRE_SIGNED_URL_ISSUED("Pre-signed URL이 성공적으로 발급되었습니다."),
     IMAGE_UPLOAD_SUCCESS("이미지 업로드에 성공했습니다."),
