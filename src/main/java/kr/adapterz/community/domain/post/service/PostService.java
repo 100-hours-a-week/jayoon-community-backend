@@ -29,4 +29,7 @@ public interface PostService {
 
     // 게시물 이미지 삭제
     void deleteImage(Long postImageId);
+
+    // 게시물 조회수 증가
+    void incrementViewCount(Long postId);
 }

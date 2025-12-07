@@ -8,7 +8,10 @@ import static kr.adapterz.community.common.message.SuccessCode.POST_DELETE_SUCCE
 import static kr.adapterz.community.common.message.SuccessCode.POST_GET_SUCCESS;
 import static kr.adapterz.community.common.message.SuccessCode.POST_UPDATE_SUCCESS;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import java.util.HashSet;
+import java.util.Set;
 import kr.adapterz.community.common.response.ApiResponseDto;
 import kr.adapterz.community.common.web.annotation.LoginUser;
 import kr.adapterz.community.domain.post.dto.CommentCreateRequestDto;
@@ -64,7 +67,9 @@ public class PostController {
     }
 
     /**
-     * 게시글을 상세 조회합니다.
+     * 게시글을 상세 조회합니다. 조회수를 세션 별로 증가시킵니다.
+     *
+     * 탭을 닫으면 세션이 종료됩니다.
      *
      * @param postId
      * @param userId
@@ -73,8 +78,20 @@ public class PostController {
     @GetMapping("/{postId}")
     public ResponseEntity<ApiResponseDto<PostResponseDto>> getPost(
             @PathVariable Long postId,
-            @LoginUser Long userId
+            @LoginUser Long userId,
+            HttpSession session
     ) {
+        @SuppressWarnings("unchecked")
+        Set<Long> viewedPosts = (Set<Long>) session.getAttribute("viewedPosts");
+        if (viewedPosts == null) {
+            viewedPosts = new HashSet<>();
+            session.setAttribute("viewedPosts", viewedPosts);
+        }
+        if (!viewedPosts.contains(postId)) {
+            postService.incrementViewCount(postId);
+            viewedPosts.add(postId);
+        }
+
         PostResponseDto post = postService.findPostDetailById(postId, userId);
         ApiResponseDto<PostResponseDto> responseBody = ApiResponseDto.success(post,
                 POST_GET_SUCCESS.getMessage());

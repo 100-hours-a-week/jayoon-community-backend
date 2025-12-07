@@ -131,6 +131,10 @@ public class Post {
         }
     }
 
+    public void incrementViewCount() {
+        this.viewCount++;
+    }
+
     public void incrementCommentCount() {
         this.commentCount++;
     }

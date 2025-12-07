@@ -68,7 +68,8 @@ public class PostServiceImpl implements PostService {
         List<PostImageCreateDto> postImages = findPostImageByPostId(postId);
 
         boolean isAuthor = (userId != null) && post.getUser().getId().equals(userId);
-        boolean isLiked = (userId != null) && postLikeRepository.existsByUserIdAndPostId(userId, postId);
+        boolean isLiked =
+                (userId != null) && postLikeRepository.existsByUserIdAndPostId(userId, postId);
 
         return PostResponseDto.of(post, postImages, isAuthor, isLiked);
     }
@@ -122,7 +123,7 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public PostResponseDto editPost(Long userId, Long postId, PostUpdateRequestDto request) {
         Post post = postRepository.findById(postId)
-            .orElseThrow(() -> new NotFoundException(POST_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(POST_NOT_FOUND));
 
         if (!post.getUser().getId().equals(userId)) {
             throw new NotFoundException(POST_NOT_FOUND);
@@ -195,5 +196,14 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public void deleteImage(Long postImageId) {
         // Will be implemented later
+    }
+
+    @Override
+    @Transactional
+    public void incrementViewCount(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(
+                        () -> new IllegalArgumentException("Post not found with id: " + postId));
+        post.incrementViewCount();
     }
 }
