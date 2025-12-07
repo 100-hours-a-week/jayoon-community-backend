@@ -13,6 +13,7 @@ import kr.adapterz.community.domain.user.dto.UserCreateRequestDto;
 import kr.adapterz.community.domain.user.dto.UserDeleteRequestDto;
 import kr.adapterz.community.domain.user.dto.UserResponseDto;
 import kr.adapterz.community.domain.user.dto.UserUpdateRequestDto;
+import kr.adapterz.community.domain.user.dto.UserUpdateResponseDto;
 import kr.adapterz.community.domain.user.entity.User;
 import kr.adapterz.community.domain.user.entity.UserAuth;
 import kr.adapterz.community.domain.user.repository.UserAuthRepository;
@@ -91,11 +92,14 @@ public class UserService {
      * 때문에 명시적으로 update 쿼리를 작성하지 않아도 됩니다.
      */
     @Transactional
-    public void updateUser(Long userId, UserUpdateRequestDto request) {
+    public UserUpdateResponseDto updateUser(Long userId, UserUpdateRequestDto request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
         UserAuth userAuth = userAuthRepository.findByUserId(userId)
                 .orElseThrow(() -> new NotFoundException(USER_AUTH_NOT_FOUND));
+
+        String responseNickname = null;
+        String responseProfileImageUrl = null;
 
         if (request.nickname() != null && !request.nickname().isBlank()) {
             if (userRepository.existsByNickname(request.nickname()) && !user.getNickname()
@@ -103,9 +107,13 @@ public class UserService {
                 throw new BadRequestException(USER_NICKNAME_ALREADY_EXISTED);
             }
             user.updateNickname(request.nickname());
+            responseNickname = request.nickname();
         }
 
         user.updateProfileImageUrl(request.profileImageUrl());
+        if (request.profileImageUrl() != null) {
+            responseProfileImageUrl = request.profileImageUrl();
+        }
 
         if (request.currentPassword() != null && !request.currentPassword().isBlank() &&
                 request.updatedPassword() != null && !request.updatedPassword().isBlank()) {
@@ -115,6 +123,8 @@ public class UserService {
             String newPasswordHash = encoder.encodePassword(request.updatedPassword());
             userAuth.updatePasswordHash(newPasswordHash);
         }
+
+        return new UserUpdateResponseDto(responseNickname, responseProfileImageUrl);
     }
 
     /**

@@ -14,6 +14,7 @@ import kr.adapterz.community.domain.user.dto.UserCreateRequestDto;
 import kr.adapterz.community.domain.user.dto.UserDeleteRequestDto;
 import kr.adapterz.community.domain.user.dto.UserResponseDto;
 import kr.adapterz.community.domain.user.dto.UserUpdateRequestDto;
+import kr.adapterz.community.domain.user.dto.UserUpdateResponseDto;
 import kr.adapterz.community.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -51,20 +52,20 @@ public class UserController {
      * 비밀번호 수정을 성공적으로 진행했다면, 새로운 인증 정보를 생성합니다.
      */
     @PatchMapping("/me")
-    public ResponseEntity<ApiResponseDto<?>> updateUser(
+    public ResponseEntity<ApiResponseDto<UserUpdateResponseDto>> updateUser(
             @LoginUser Long userId,
             @Valid @RequestBody UserUpdateRequestDto request,
             HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) {
 
-        userService.updateUser(userId, request);
+        UserUpdateResponseDto updated = userService.updateUser(userId, request);
 
         if (request.currentPassword() != null && !request.currentPassword().isBlank() &&
                 request.updatedPassword() != null && !request.updatedPassword().isBlank()) {
             authManager.login(userId, httpServletRequest, httpServletResponse);
         }
 
-        ApiResponseDto<?> responseBody = ApiResponseDto.success(null,
+        ApiResponseDto<UserUpdateResponseDto> responseBody = ApiResponseDto.success(updated,
                 USER_UPDATE_SUCCESS.getMessage());
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
