@@ -44,6 +44,11 @@ public class AuthenticationFilter implements Filter {
             throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
 
+        if (req.getMethod().equalsIgnoreCase("OPTIONS")) {
+            chain.doFilter(request, response);
+            return;
+        }
+
         try {
             Long userId = authManager.getAuthenticatedUserId(req);
             request.setAttribute("userId", userId);

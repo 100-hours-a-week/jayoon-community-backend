@@ -30,6 +30,8 @@ security:
         - /api
       DELETE:
         - /api
+      OPTIONS:
+        - /api/**
 
 logging:
   level:
