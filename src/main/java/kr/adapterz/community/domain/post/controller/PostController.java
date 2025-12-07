@@ -3,6 +3,7 @@ package kr.adapterz.community.domain.post.controller;
 import static kr.adapterz.community.common.message.SuccessCode.POST_CREATE_SUCCESS;
 import static kr.adapterz.community.common.message.SuccessCode.POST_DELETE_SUCCESS;
 import static kr.adapterz.community.common.message.SuccessCode.POST_GET_SUCCESS;
+import static kr.adapterz.community.common.message.SuccessCode.POST_UPDATE_SUCCESS;
 
 import jakarta.validation.Valid;
 import kr.adapterz.community.common.response.ApiResponseDto;
@@ -10,12 +11,14 @@ import kr.adapterz.community.common.web.annotation.LoginUser;
 import kr.adapterz.community.domain.post.dto.PostCreateRequestDto;
 import kr.adapterz.community.domain.post.dto.PostListResponseDto;
 import kr.adapterz.community.domain.post.dto.PostResponseDto;
+import kr.adapterz.community.domain.post.dto.PostUpdateRequestDto;
 import kr.adapterz.community.domain.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -85,6 +88,26 @@ public class PostController {
     }
 
     /**
+     * 게시글을 수정합니다.
+     *
+     * @param postId
+     * @param userId
+     * @param request
+     * @return
+     */
+    @PatchMapping("/{postId}")
+    public ResponseEntity<ApiResponseDto<PostResponseDto>> editPost(
+            @PathVariable Long postId,
+            @LoginUser Long userId,
+            @RequestBody PostUpdateRequestDto request
+    ) {
+        PostResponseDto updatedPost = postService.editPost(userId, postId, request);
+        ApiResponseDto<PostResponseDto> responseBody = ApiResponseDto.success(updatedPost,
+                POST_UPDATE_SUCCESS.getMessage());
+        return ResponseEntity.ok(responseBody);
+    }
+
+    /**
      * 게시글을 삭제합니다.
      *
      * @param postId
@@ -93,13 +116,12 @@ public class PostController {
      */
     @DeleteMapping("/{postId}")
     public ResponseEntity<ApiResponseDto<Void>> deletePost(
-        @PathVariable Long postId,
-        @LoginUser Long userId
+            @PathVariable Long postId,
+            @LoginUser Long userId
     ) {
         postService.deletePost(userId, postId);
         ApiResponseDto<Void> responseBody = ApiResponseDto.success(null,
-            POST_DELETE_SUCCESS.getMessage());
+                POST_DELETE_SUCCESS.getMessage());
         return ResponseEntity.ok(responseBody);
     }
-
 }

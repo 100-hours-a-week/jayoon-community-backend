@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import kr.adapterz.community.domain.post.dto.PostCreateRequestDto;
+import kr.adapterz.community.domain.post.dto.PostUpdateRequestDto;
 import kr.adapterz.community.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -101,5 +102,32 @@ public class Post {
                 .likeCount(0L)
                 .commentCount(0L)
                 .build();
+    }
+
+    /**
+     * 게시물의 제목, 본문, 이미지를 변경합니다.
+     *
+     * 이미지는 orphanRemoval 덕분에 images.clear()를 호출하면 자동으로 기존의 PostImage와의 참조를 끊습니다.
+     * 그로써 고아가 된 PostImage는 삭제 대상이 됩니다. DELETE 쿼리를 자동으로 생성합니다.
+     *
+     * cascade = CascadeType.ALL 때문에 images.addAll() 호출 후 PostImage는 생성 대상이 됩니다.
+     * INSERT 쿼리를 자동으로 생성합니다.
+     *
+     * @param request
+     */
+    public void update(PostUpdateRequestDto request) {
+        if (request.title() != null) {
+            this.title = request.title();
+        }
+        if (request.body() != null) {
+            this.body = request.body();
+        }
+        if (request.imageUrls() != null) {
+            this.images.clear();
+            List<PostImage> newImages = request.imageUrls().stream()
+                    .map(imageUrl -> PostImage.of(this, imageUrl))
+                    .toList();
+            this.images.addAll(newImages);
+        }
     }
 }

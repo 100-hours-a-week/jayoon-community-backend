@@ -5,6 +5,7 @@ import kr.adapterz.community.domain.post.dto.PostCreateRequestDto;
 import kr.adapterz.community.domain.post.dto.PostImageCreateDto;
 import kr.adapterz.community.domain.post.dto.PostListResponseDto;
 import kr.adapterz.community.domain.post.dto.PostResponseDto;
+import kr.adapterz.community.domain.post.dto.PostUpdateRequestDto;
 
 public interface PostService {
 
@@ -18,7 +19,7 @@ public interface PostService {
     PostListResponseDto findPostSummaries(Long limit, Long cursor);
 
     // 게시물 수정
-    PostResponseDto editPost(Long userId, Long postId);
+    PostResponseDto editPost(Long userId, Long postId, PostUpdateRequestDto request);
 
     // 게시물 삭제
     void deletePost(Long userId, Long postId);

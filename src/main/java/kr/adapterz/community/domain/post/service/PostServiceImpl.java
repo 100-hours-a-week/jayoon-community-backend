@@ -11,6 +11,7 @@ import kr.adapterz.community.domain.post.dto.PostImageCreateDto;
 import kr.adapterz.community.domain.post.dto.PostListResponseDto;
 import kr.adapterz.community.domain.post.dto.PostResponseDto;
 import kr.adapterz.community.domain.post.dto.PostSummaryResponseDto;
+import kr.adapterz.community.domain.post.dto.PostUpdateRequestDto;
 import kr.adapterz.community.domain.post.entity.Post;
 import kr.adapterz.community.domain.post.entity.PostImage;
 import kr.adapterz.community.domain.post.repository.PostImageRepository;
@@ -116,8 +117,18 @@ public class PostServiceImpl implements PostService {
      */
     @Override
     @Transactional
-    public PostResponseDto editPost(Long userId, Long postId) {
-        return null; // Will be implemented later
+    public PostResponseDto editPost(Long userId, Long postId, PostUpdateRequestDto request) {
+        Post post = postRepository.findById(postId)
+            .orElseThrow(() -> new NotFoundException(POST_NOT_FOUND));
+
+        if (!post.getUser().getId().equals(userId)) {
+            throw new NotFoundException(POST_NOT_FOUND);
+        }
+
+        post.update(request);
+
+        List<PostImageCreateDto> postImages = findPostImageByPostId(postId);
+        return PostResponseDto.of(post, postImages, true);
     }
 
     /**
