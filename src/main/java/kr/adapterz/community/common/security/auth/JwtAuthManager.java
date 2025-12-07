@@ -54,7 +54,7 @@ public class JwtAuthManager implements AuthManager {
         refreshTokens.put(dto.refreshToken(), userId);
         addCookie(response, ACCESS_COOKIE_NAME, dto.accessToken(),
                 (int) accessTokenExpirationMs / 1000);
-        addCookie(response, REFRESH_COOKIE_NAME, dto.refreshToken(),
+        addRefreshTokenCookie(response, REFRESH_COOKIE_NAME, dto.refreshToken(),
                 (int) refreshTokenExpirationMs / 1000);
     }
 
@@ -117,6 +117,16 @@ public class JwtAuthManager implements AuthManager {
         Cookie cookie = new Cookie(cookieName, value);
         cookie.setMaxAge(maxAgeSeconds);
         cookie.setPath("/");
+        cookie.setHttpOnly(true);
+        response.addCookie(cookie);
+    }
+
+    private void addRefreshTokenCookie(HttpServletResponse response, String cookieName,
+                                       String value,
+                                       int maxAgeSeconds) {
+        Cookie cookie = new Cookie(cookieName, value);
+        cookie.setMaxAge(maxAgeSeconds);
+        cookie.setPath("/api/auth/refresh");
         cookie.setHttpOnly(true);
         response.addCookie(cookie);
     }
