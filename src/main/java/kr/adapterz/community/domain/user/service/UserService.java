@@ -10,6 +10,7 @@ import kr.adapterz.community.common.exception.dto.BadRequestException;
 import kr.adapterz.community.common.exception.dto.NotFoundException;
 import kr.adapterz.community.common.security.encoding.Encoder;
 import kr.adapterz.community.domain.user.dto.UserCreateRequestDto;
+import kr.adapterz.community.domain.user.dto.UserDeleteRequestDto;
 import kr.adapterz.community.domain.user.dto.UserResponseDto;
 import kr.adapterz.community.domain.user.dto.UserUpdateRequestDto;
 import kr.adapterz.community.domain.user.entity.User;
@@ -113,5 +114,25 @@ public class UserService {
             String newPasswordHash = encoder.encodePassword(request.updatedPassword());
             userAuth.updatePasswordHash(newPasswordHash);
         }
+    }
+
+    /**
+     * 회원탈퇴를 진행합니다.
+     *
+     * 현재 비밀번호와 일치하는지 확인하고, 일치한다면 해당 userId의 User와 UserAuth의 soft delete를 진행합니다.
+     */
+    @Transactional
+    public void deleteUser(Long userId, UserDeleteRequestDto request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
+        UserAuth userAuth = userAuthRepository.findByUserId(userId)
+                .orElseThrow(() -> new NotFoundException(USER_AUTH_NOT_FOUND));
+
+        if (!encoder.checkPassword(request.password(), userAuth.getPasswordHash())) {
+            throw new BadRequestException(PASSWORD_MISMATCH);
+        }
+
+        user.deleteSoftly();
+        userAuth.deleteSoftly();
     }
 }

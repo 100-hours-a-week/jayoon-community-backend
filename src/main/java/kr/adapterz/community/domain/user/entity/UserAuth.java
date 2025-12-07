@@ -64,4 +64,13 @@ public class UserAuth {
     public void updatePasswordHash(String newPasswordHash) {
         this.passwordHash = newPasswordHash;
     }
+
+    /**
+     * UserAuth 엔티티의 Soft delete를 진행합니다.
+     *
+     * 엔티티의 deletedAt을 현재 시간으로 변경합니다.
+     */
+    public void deleteSoftly() {
+        this.deletedAt = LocalDateTime.now();
+    }
 }

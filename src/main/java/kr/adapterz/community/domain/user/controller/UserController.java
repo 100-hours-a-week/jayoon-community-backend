@@ -1,6 +1,7 @@
 package kr.adapterz.community.domain.user.controller;
 
 import static kr.adapterz.community.common.message.SuccessCode.USER_CREATE_SUCCESS;
+import static kr.adapterz.community.common.message.SuccessCode.USER_DELETE_SUCCESS;
 import static kr.adapterz.community.common.message.SuccessCode.USER_UPDATE_SUCCESS;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,12 +11,14 @@ import kr.adapterz.community.common.response.ApiResponseDto;
 import kr.adapterz.community.common.security.auth.AuthManager;
 import kr.adapterz.community.common.web.annotation.LoginUser;
 import kr.adapterz.community.domain.user.dto.UserCreateRequestDto;
+import kr.adapterz.community.domain.user.dto.UserDeleteRequestDto;
 import kr.adapterz.community.domain.user.dto.UserResponseDto;
 import kr.adapterz.community.domain.user.dto.UserUpdateRequestDto;
 import kr.adapterz.community.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -63,6 +66,26 @@ public class UserController {
 
         ApiResponseDto<?> responseBody = ApiResponseDto.success(null,
                 USER_UPDATE_SUCCESS.getMessage());
+        return new ResponseEntity<>(responseBody, HttpStatus.OK);
+    }
+
+    /**
+     * 회원탈퇴
+     *
+     * 유저 정보를 삭제 후 인증 정보를 제거합니다.
+     */
+    @DeleteMapping("/me")
+    public ResponseEntity<ApiResponseDto<?>> deleteUser(
+            @LoginUser Long userId,
+            @Valid @RequestBody UserDeleteRequestDto request,
+            HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) {
+
+        userService.deleteUser(userId, request);
+        authManager.logout(httpServletRequest, httpServletResponse);
+
+        ApiResponseDto<?> responseBody = ApiResponseDto.success(null,
+                USER_DELETE_SUCCESS.getMessage());
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 }
