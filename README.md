@@ -45,7 +45,7 @@
 - [x] POST /posts/:postId/comments/ 댓글 생성
 - [x] (인증x)GET /posts/:postId/comments 댓글 목록 조회
     - 댓글을 단일 조회가 없습니다.
-- [ ] PUT /posts/:postId/comments/:commentId 댓글 수정
+- [x] PUT /posts/:postId/comments/:commentId 댓글 수정
 - [ ] DELETE /posts/:postId/comments/:commentId 댓글 삭제
 
 - [ ] PUT /posts/:postId/likes 좋아요 생성 또는 삭제.

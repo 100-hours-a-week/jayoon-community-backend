@@ -1250,9 +1250,7 @@ commentId: Number, 1
 
 ```json
 {
-  "title": "제목입니다.",
-  "body": "본문입니다~~",
-  "imageUrl": "http://asdlkfjaklsj.faksdfj"
+  "body": "본문입니다~~"
 }
 ```
 
@@ -1268,7 +1266,7 @@ commentId: Number, 1
 ```json
 {
   "success": true,
-  "message": null,
+  "message": "댓글 수정이 성공적으로 완료 되었습니다.",
   "data": {
     "id": 123,
     "body": "여기에 게시글 내용이 들어갑니다."

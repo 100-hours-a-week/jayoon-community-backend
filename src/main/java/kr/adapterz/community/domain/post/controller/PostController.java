@@ -1,6 +1,7 @@
 package kr.adapterz.community.domain.post.controller;
 
 import static kr.adapterz.community.common.message.SuccessCode.COMMENT_CREATE_SUCCESS;
+import static kr.adapterz.community.common.message.SuccessCode.COMMENT_UPDATE_SUCCESS;
 import static kr.adapterz.community.common.message.SuccessCode.POST_CREATE_SUCCESS;
 import static kr.adapterz.community.common.message.SuccessCode.POST_DELETE_SUCCESS;
 import static kr.adapterz.community.common.message.SuccessCode.POST_GET_SUCCESS;
@@ -12,6 +13,7 @@ import kr.adapterz.community.common.web.annotation.LoginUser;
 import kr.adapterz.community.domain.post.dto.CommentCreateRequestDto;
 import kr.adapterz.community.domain.post.dto.CommentListResponseDto;
 import kr.adapterz.community.domain.post.dto.CommentResponseDto;
+import kr.adapterz.community.domain.post.dto.CommentUpdateRequestDto;
 import kr.adapterz.community.domain.post.dto.PostCreateRequestDto;
 import kr.adapterz.community.domain.post.dto.PostListResponseDto;
 import kr.adapterz.community.domain.post.dto.PostResponseDto;
@@ -171,6 +173,29 @@ public class PostController {
         CommentResponseDto newComment = commentService.createComment(postId, userId, request);
         ApiResponseDto<CommentResponseDto> responseBody = ApiResponseDto.success(newComment,
                 COMMENT_CREATE_SUCCESS.getMessage());
+        return ResponseEntity.ok(responseBody);
+    }
+
+    /**
+     * 특정 댓글을 수정합니다.
+     *
+     * @param postId
+     * @param commentId
+     * @param userId
+     * @param request
+     * @return
+     */
+    @PatchMapping("/{postId}/comments/{commentId}")
+    public ResponseEntity<ApiResponseDto<CommentResponseDto>> updateComment(
+            @PathVariable Long postId,
+            @PathVariable Long commentId,
+            @LoginUser Long userId,
+            @RequestBody CommentUpdateRequestDto request
+    ) {
+        CommentResponseDto updatedComment = commentService.updateComment(postId, commentId, userId,
+                request);
+        ApiResponseDto<CommentResponseDto> responseBody = ApiResponseDto.success(updatedComment,
+                COMMENT_UPDATE_SUCCESS.getMessage());
         return ResponseEntity.ok(responseBody);
     }
 }

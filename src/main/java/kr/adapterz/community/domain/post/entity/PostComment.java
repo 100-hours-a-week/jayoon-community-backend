@@ -59,4 +59,10 @@ public class PostComment {
     public static PostComment of(User user, Post post, String body) {
         return new PostComment(user, post, body);
     }
+
+    public void update(String body) {
+        if (body != null) {
+            this.body = body;
+        }
+    }
 }

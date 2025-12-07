@@ -3,6 +3,7 @@ package kr.adapterz.community.domain.post.service;
 import kr.adapterz.community.domain.post.dto.CommentCreateRequestDto;
 import kr.adapterz.community.domain.post.dto.CommentListResponseDto;
 import kr.adapterz.community.domain.post.dto.CommentResponseDto;
+import kr.adapterz.community.domain.post.dto.CommentUpdateRequestDto;
 
 public interface CommentService {
 
@@ -26,4 +27,15 @@ public interface CommentService {
      * @return
      */
     CommentListResponseDto findCommentsByPostId(Long postId, Long limit, Long cursor, Long loggedInUserId);
+
+    /**
+     * 특정 댓글을 수정합니다.
+     *
+     * @param postId
+     * @param commentId
+     * @param userId
+     * @param request
+     * @return
+     */
+    CommentResponseDto updateComment(Long postId, Long commentId, Long userId, CommentUpdateRequestDto request);
 }

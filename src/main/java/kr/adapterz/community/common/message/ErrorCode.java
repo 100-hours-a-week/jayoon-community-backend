@@ -41,7 +41,10 @@ public enum ErrorCode {
 
     // Post
     POST_NOT_FOUND("해당 게시물을 찾을 수 없습니다."),
-    POST_ACCESS_DENIED("해당 게시물에 대한 접근 권한이 없습니다.");
+    POST_ACCESS_DENIED("해당 게시물에 대한 접근 권한이 없습니다."),
+
+    // Comment
+    COMMENT_NOT_FOUND("해당 댓글을 찾을 수 없습니다.");
 
 
     private final String message;
