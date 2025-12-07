@@ -15,6 +15,7 @@ import kr.adapterz.community.domain.post.dto.PostUpdateRequestDto;
 import kr.adapterz.community.domain.post.entity.Post;
 import kr.adapterz.community.domain.post.entity.PostImage;
 import kr.adapterz.community.domain.post.repository.PostImageRepository;
+import kr.adapterz.community.domain.post.repository.PostLikeRepository;
 import kr.adapterz.community.domain.post.repository.PostRepository;
 import kr.adapterz.community.domain.user.entity.User;
 import kr.adapterz.community.domain.user.service.UserService;
@@ -31,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final PostImageRepository postImageRepository;
+    private final PostLikeRepository postLikeRepository;
     private final UserService userService;
 
     /**
@@ -50,7 +52,7 @@ public class PostServiceImpl implements PostService {
 
         Post savedPost = postRepository.save(newPost);
         List<PostImageCreateDto> images = createImage(savedPost.getId(), request.imageUrls());
-        return PostResponseDto.of(savedPost, images, true);
+        return PostResponseDto.of(savedPost, images, true, false);
     }
 
     /**
@@ -66,8 +68,9 @@ public class PostServiceImpl implements PostService {
         List<PostImageCreateDto> postImages = findPostImageByPostId(postId);
 
         boolean isAuthor = (userId != null) && post.getUser().getId().equals(userId);
+        boolean isLiked = (userId != null) && postLikeRepository.existsByUserIdAndPostId(userId, postId);
 
-        return PostResponseDto.of(post, postImages, isAuthor);
+        return PostResponseDto.of(post, postImages, isAuthor, isLiked);
     }
 
     /**
@@ -128,7 +131,9 @@ public class PostServiceImpl implements PostService {
         post.update(request);
 
         List<PostImageCreateDto> postImages = findPostImageByPostId(postId);
-        return PostResponseDto.of(post, postImages, true);
+        boolean isLiked = postLikeRepository.existsByUserIdAndPostId(userId, postId);
+
+        return PostResponseDto.of(post, postImages, true, isLiked);
     }
 
     /**

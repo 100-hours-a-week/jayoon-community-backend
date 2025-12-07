@@ -926,7 +926,9 @@ postId: Number, 1
     "user": {
       "id": 1,
       "nickname": "jayoon"
-    }
+    },
+    "isAuthor": true,
+    "isLiked": false
   },
   "error": null
 }
@@ -1306,7 +1308,8 @@ HeaderCookie: Bearer access token
       "id": 1,
       "nickname": "jayoon"
     },
-    "isAuthor": true
+    "isAuthor": true,
+    "isLiked": false
   },
   "error": null
 }

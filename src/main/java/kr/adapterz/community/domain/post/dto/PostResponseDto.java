@@ -19,8 +19,8 @@ public record PostResponseDto(
         List<PostImageCreateDto> imageUrls,
         LocalDateTime createdAt,
         UserResponse user,
-        boolean isAuthor
-//        boolean isLiked
+        boolean isAuthor,
+        boolean isLiked
 ) {
     /**
      * 게시글 작성자 정보를 담는 내부 레코드
@@ -34,7 +34,7 @@ public record PostResponseDto(
         }
     }
 
-    public static PostResponseDto of(Post post, List<PostImageCreateDto> images, boolean isAuthor) {
+    public static PostResponseDto of(Post post, List<PostImageCreateDto> images, boolean isAuthor, boolean isLiked) {
         return PostResponseDto.builder()
                 .id(post.getId())
                 .title(post.getTitle())
@@ -46,6 +46,7 @@ public record PostResponseDto(
                 .user(UserResponse.of(post.getUser().getId(), post.getUser().getNickname()))
                 .createdAt(post.getCreatedAt())
                 .isAuthor(isAuthor)
+                .isLiked(isLiked)
                 .build();
     }
 }
