@@ -15,6 +15,12 @@
 - **PUT**: 리소스 전체를 완전히 대체합니다. (모든 필드 수정)
 - **PATCH**: 리소스의 일부 필드만 부분적으로 수정합니다.
 
+### 공통 에러 처리 원칙
+
+- **401 Unauthorized**: 인증 토큰이 없거나 만료됨.
+- **403 Forbidden**: 권한이 없음. (단, 리소스 존재 여부 노출을 막기 위해 **404**로 응답할 수 있음)
+- **500 Internal Server Error**: 서버 내부 오류.
+
 -----
 
 # Users
@@ -29,24 +35,16 @@
 
 없음
 
-#### Path Variables
-
-없음
-
-#### Query Parameters
-
-없음
-
 #### Body
 
 **Content-Type:** `application/json`
 
-| 필드명               | 필수 |   타입   | 제약 조건    | 설명                               |
-|:------------------|:--:|:------:|:---------|:---------------------------------|
-| `email`           | O  | String | 320자 이내  | 소문자 영문, 숫자, `@`, `.`만 가능. 이메일 형식 |
-| `password`        | O  | String | 8\~20자   | 대/소문자, 숫자, 특수문자 각 1개 이상 포함       |
-| `nickname`        | O  | String | 2\~10자   | 띄어쓰기 불가능                         |
-| `profileImageUrl` | X  | String | 2048자 이내 | 미입력 시 `null` 저장                  |
+| 필드명               | 필수 |   타입   | 제약 조건    | 설명                       |
+|:------------------|:--:|:------:|:---------|:-------------------------|
+| `email`           | O  | String | 320자 이내  | 소문자 영문, 숫자, `@`, `.`만 가능 |
+| `password`        | O  | String | 8\~20자   | 대/소문자, 숫자, 특수문자 각 1개 이상  |
+| `nickname`        | O  | String | 2\~10자   | 띄어쓰기 불가능                 |
+| `profileImageUrl` | X  | String | 2048자 이내 | 미입력 시 `null`             |
 
 ```json
 {
@@ -61,14 +59,9 @@
 
 #### 성공 (200 OK)
 
-> **Note:** 사용자 경험을 위해 회원가입과 동시에 자동 로그인 처리됩니다.
+> **Note:** 회원가입 성공 시 자동으로 로그인 처리됩니다.
 
-**Headers**
-
-- `Set-Cookie`: `ACCESS_TOKEN` (HttpOnly, Path=/)
-- `Set-Cookie`: `REFRESH_TOKEN` (HttpOnly, Path=/api/auth/refresh)
-
-**Body**
+**Headers**: `Set-Cookie` (ACCESS\_TOKEN, REFRESH\_TOKEN)
 
 ```json
 {
@@ -86,16 +79,50 @@
 
 #### 실패
 
-- **400 Bad Request**: 잘못된 형식
-- **500 Internal Server Error**: 서버 일시적 오류
+**400 Bad Request** (유효성 검사 실패)
+
+```json
+{
+  "success": false,
+  "message": "잘못된 이메일 형식입니다.",
+  "data": null,
+  "error": {
+    "statusCode": "400"
+  }
+}
+```
+
+**409 Conflict** (이메일 중복)
+
+```json
+{
+  "success": false,
+  "message": "이미 존재하는 이메일입니다.",
+  "data": null,
+  "error": {
+    "statusCode": "409"
+  }
+}
+```
+
+**500 Internal Server Error**
+
+```json
+{
+  "success": false,
+  "message": "서비스가 일시적으로 불안정합니다. 관리자에게 문의해주세요.",
+  "data": null,
+  "error": {
+    "statusCode": "500"
+  }
+}
+```
 
 -----
 
 ## 2\. 유저 정보 변경
 
 `PATCH` `/users/me`
-
-프로필 사진, 닉네임, 비밀번호를 변경할 수 있습니다.
 
 ### 요청 (Request)
 
@@ -105,24 +132,13 @@
 |:---------|:--:|:--------------------------------|
 | `Cookie` | O  | `ACCESS_TOKEN`, `REFRESH_TOKEN` |
 
-#### Path Variables
-
-> **Dev Note:** `userId`를 Path Variable로 받지 않고 `/me`를 사용합니다. ID 예측을 통한 보안 위협을 방지하고, 토큰 기반으로 본인을 식별하는 패턴이 더 안전하고 깔끔합니다.
-
 #### Body
 
-수정하고 싶은 필드만 보냅니다. (선택적)
-
-| 필드명               | 필수 |   타입   | 제약 조건    | 설명           |
-|:------------------|:--:|:------:|:---------|:-------------|
-| `profileImageUrl` | X  | String | 2048자 이내 |              |
-| `nickname`        | X  | String | 2\~10자   | 띄어쓰기 불가능     |
-| `currentPassword` | X  | String | 8\~20자   | 비밀번호 변경 시 필수 |
-| `updatedPassword` | X  | String | 8\~20자   | 비밀번호 변경 시 필수 |
+(변경할 필드만 전송)
 
 ```json
 {
-  "profileImageUrl": "https://your-cdn.com/images/...",
+  "profileImageUrl": "http://image.kr/img.jpg",
   "nickname": "jayoon",
   "currentPassword": "current_password",
   "updatedPassword": "updated_password"
@@ -132,22 +148,6 @@
 ### 응답 (Response)
 
 #### 성공 (200 OK)
-
-**Case 1: 프로필 사진 변경**
-
-```json
-{
-  "success": true,
-  "message": "프로필 사진이 성공적으로 변경되었습니다.",
-  "data": {
-    "userId": 1,
-    "profileImageUrl": "https://your-cdn.com/images/new.jpg"
-  },
-  "error": null
-}
-```
-
-**Case 2: 닉네임 변경**
 
 ```json
 {
@@ -161,10 +161,23 @@
 }
 ```
 
-**Case 3: 비밀번호 변경**
-*Header에 `REFRESH_TOKEN` 재발급 (HttpOnly)*
+```json
+{
+  "success": true,
+  "message": "프로필 사진이 성공적으로 변경되었습니다.",
+  "data": {
+    "userId": 1,
+    "profileImageUrl": "https://your-cdn.com/images/profile/new-image.jpg"
+  },
+  "error": null
+}
+```
 
-> **Note:** 비밀번호 변경 후 해당 기기만 인증 상태를 유지하고, 다른 기기에서는 로그아웃 처리됩니다.
+##### header
+
+set-cookie "refreshToken": "df...", httpOnly
+
+- 비밀번호를 변경한 후 해당 기기만 인증 상태를 유지합니다.
 
 ```json
 {
@@ -177,11 +190,31 @@
 
 #### 실패
 
-- **400**: 잘못된 형식 / 비밀번호 불일치
-- **401**: 존재하지 않는 인증 정보 (토큰 없음 또는 만료)
-- **403**: 권한 없음
-- **404**: 토큰의 userId가 DB에 없음
-- **500**: 서버 오류
+**400 Bad Request** (비밀번호 불일치)
+
+```json
+{
+  "success": false,
+  "message": "현재 비밀번호가 일치하지 않습니다.",
+  "data": null,
+  "error": {
+    "statusCode": "400"
+  }
+}
+```
+
+**401 Unauthorized** (인증 정보 없음)
+
+```json
+{
+  "success": false,
+  "message": "존재하지 않는 인증 정보입니다.",
+  "data": null,
+  "error": {
+    "statusCode": "401"
+  }
+}
+```
 
 -----
 
@@ -191,21 +224,8 @@
 
 ### 요청 (Request)
 
-#### Headers
-
-| 이름       | 필수 | 설명                              |
-|:---------|:--:|:--------------------------------|
-| `Cookie` | O  | `ACCESS_TOKEN`, `REFRESH_TOKEN` |
-
-#### Body
-
-> **Note:** RFC 7231에 따르면 DELETE 메서드에 Body를 포함하는 것은 정의된 의미가 없으나, 본인 확인을 위해 비밀번호를 받습니다.
-
-```json
-{
-  "password": "current_password"
-}
-```
+**Headers**: `Cookie` (Tokens)
+**Body**: `{"password": "current_password"}`
 
 ### 응답 (Response)
 
@@ -222,10 +242,31 @@
 
 #### 실패
 
-- **400**: 비밀번호 불일치 등
-- **401**: 미인증
-- **404**: 리소스 없음
-- **500**: 서버 오류
+**400 Bad Request** (비밀번호 불일치)
+
+```json
+{
+  "success": false,
+  "message": "비밀번호가 잘못 되었습니다.",
+  "data": null,
+  "error": {
+    "statusCode": "400"
+  }
+}
+```
+
+**401 Unauthorized**
+
+```json
+{
+  "success": false,
+  "message": "존재하지 않는 인증 정보입니다.",
+  "data": null,
+  "error": {
+    "statusCode": "401"
+  }
+}
+```
 
 -----
 
@@ -237,26 +278,21 @@
 
 ### 요청 (Request)
 
-#### Headers
+**Headers**: `Cookie` (Tokens)
+**Body**: `title`, `body` 필수
 
-| 이름       | 필수 | 설명                              |
-|:---------|:--:|:--------------------------------|
-| `Cookie` | O  | `ACCESS_TOKEN`, `REFRESH_TOKEN` |
-
-#### Body
-
-| 필드명         | 필수 |   타입   | 설명                      |
-|:------------|:--:|:------:|:------------------------|
-| `title`     | O  | String | 제목                      |
-| `body`      | O  | String | 본문 (마크다운 지원)            |
-| `imageUrls` | X  | Array  | 이미지 URL 배열 (현재는 1개만 지원) |
+| 필드명         | 필수 |    타입    | 제약 조건 | 설명              |
+|:------------|:--:|:--------:|:------|:----------------|
+| `title`     | O  |  String  |       | 게시글 제목          |
+| `body`      | O  |  String  |       | 게시글 본문          |
+| `imageUrls` | X  | String[] |       | 이미지 URL 배열 (선택) |
 
 ```json
 {
-  "title": "제목1",
-  "body": "본문 내용",
+  "title": "게시글 제목입니다",
+  "body": "게시글 본문 내용입니다. \n 안녕하세요!",
   "imageUrls": [
-    "https://your-cdn.com/images/..."
+    "https://cdn.your-domain.com/path/image1.jpg"
   ]
 }
 ```
@@ -265,80 +301,87 @@
 
 #### 성공 (201 Created)
 
-**Header** `Location`: `/api/v1/posts/123`
-
 ```json
 {
   "success": true,
   "message": "게시글이 성공적으로 생성되었습니다.",
   "data": {
     "id": 123,
-    "title": "제목",
-    "body": "본문",
-    "likeCount": 0,
-    "commentCount": 0,
-    "viewCount": 0,
-    "imageUrls": [
-      "..."
-    ],
-    "createdAt": "2025-10-13T07:45:43Z",
-    "user": {
-      "id": 1,
-      "nickname": "jayoon"
-    },
-    "isAuthor": true,
-    "isLiked": false
+    "title": "...",
+    "createdAt": "..."
   },
   "error": null
 }
 ```
 
+#### 실패
+
+**400 Bad Request** (입력값 누락)
+
+```json
+{
+  "success": false,
+  "message": "제목은 필수 입력 항목입니다.",
+  "data": null,
+  "error": {
+    "statusCode": "400"
+  }
+}
+```
+
+**401 Unauthorized**
+
+```json
+{
+  "success": false,
+  "message": "로그인이 필요합니다.",
+  "data": null,
+  "error": {
+    "statusCode": "401"
+  }
+}
+```
+
 -----
 
-## 2\. 게시글 목록 조회 (Infinite Scroll)
+## 2\. 게시글 목록 조회
 
 `GET` `/posts`
 
 ### 요청 (Request)
 
-#### Headers
-
-없음 (공개 API)
-
-#### Query Parameters
-
-| 파라미터     | 필수 |   타입   | 설명                            |
-|:---------|:--:|:------:|:------------------------------|
-| `limit`  | O  | Number | 한 번에 불러올 개수 (기본 10)           |
-| `cursor` | X  | Number | 마지막으로 불러온 게시글의 ID (첫 요청 시 생략) |
-
-- **첫 번째 요청:** `GET /posts?limit=10`
-- **두 번째 요청:** `GET /posts?limit=10&cursor={이전 응답의 nextCursor}`
+**Headers**: 없음 (공개)
+**Query**: `limit=10`, `cursor=10`
 
 ### 응답 (Response)
 
 #### 성공 (200 OK)
 
-`nextCursor`가 `null`이면 더 이상 데이터가 없음을 의미합니다.
-
 ```json
 {
   "success": true,
-  "message": null,
   "data": {
     "posts": [
-      {
-        "id": 10,
-        "title": "제목 10",
-        "user": {
-          ...
-        }
-      }
-      // ...
+      ...
     ],
     "nextCursor": 10
   },
   "error": null
+}
+```
+
+#### 실패
+
+**400 Bad Request** (파라미터 오류)
+
+```json
+{
+  "success": false,
+  "message": "limit 값은 1 이상이어야 합니다.",
+  "data": null,
+  "error": {
+    "statusCode": "400"
+  }
 }
 ```
 
@@ -350,15 +393,7 @@
 
 ### 요청 (Request)
 
-#### Headers
-
-없음 (공개 API)
-
-#### Path Variables
-
-| 변수명      | 설명              |
-|:---------|:----------------|
-| `postId` | 게시글 ID (Number) |
+**Headers**: 없음 (공개)
 
 ### 응답 (Response)
 
@@ -369,10 +404,8 @@
   "success": true,
   "data": {
     "id": 123,
-    "title": "제목",
-    "body": "본문",
-    "isAuthor": true
-    // ... 상세 정보
+    "title": "...",
+    "body": "..."
   },
   "error": null
 }
@@ -380,7 +413,31 @@
 
 #### 실패
 
-- **404**: 게시글 없음 또는 삭제됨
+**400 Bad Request** (ID 형식 오류)
+
+```json
+{
+  "success": false,
+  "message": "잘못된 형식의 ID입니다.",
+  "data": null,
+  "error": {
+    "statusCode": "400"
+  }
+}
+```
+
+**404 Not Found**
+
+```json
+{
+  "success": false,
+  "message": "요청한 리소스가 존재하지 않습니다.",
+  "data": null,
+  "error": {
+    "statusCode": "404"
+  }
+}
+```
 
 -----
 
@@ -390,8 +447,7 @@
 
 ### 요청 (Request)
 
-**Headers**: `Cookie` (`ACCESS_TOKEN`, `REFRESH_TOKEN`)
-**Path Variables**: `postId`
+**Headers**: `Cookie` (Tokens)
 
 ### 응답 (Response)
 
@@ -408,8 +464,33 @@
 
 #### 실패
 
-- **403**: 권한 없음 (작성자가 아님) -\> 보안상 **404**로 응답할 수 있음.
-- **404**: 게시글 없음
+**401 Unauthorized**
+
+```json
+{
+  "success": false,
+  "message": "존재하지 않는 인증 정보입니다.",
+  "data": null,
+  "error": {
+    "statusCode": "401"
+  }
+}
+```
+
+**404 Not Found**
+
+> **Security Note:** 게시글이 없거나, 게시글은 있지만 삭제 권한이 없는 경우(403) 보안을 위해 모두 404로 응답합니다.
+
+```json
+{
+  "success": false,
+  "message": "요청한 리소스가 존재하지 않습니다.",
+  "data": null,
+  "error": {
+    "statusCode": "404"
+  }
+}
+```
 
 -----
 
@@ -419,28 +500,42 @@
 
 ### 요청 (Request)
 
-#### Headers
-
-| 이름       | 필수 | 설명                              |
-|:---------|:--:|:--------------------------------|
-| `Cookie` | O  | `ACCESS_TOKEN`, `REFRESH_TOKEN` |
-
-#### Body
-
-수정하려는 필드만 포함합니다.
-
-```json
-{
-  "title": "수정된 제목",
-  "body": "수정된 본문"
-}
-```
+**Headers**: `Cookie` (Tokens)
+**Body**: `{"title": "수정"}`
 
 ### 응답 (Response)
 
 #### 성공 (200 OK)
 
-수정된 게시글 정보를 반환합니다.
+(수정된 데이터 반환)
+
+#### 실패
+
+**400 Bad Request**
+
+```json
+{
+  "success": false,
+  "message": "수정할 내용이 없습니다.",
+  "data": null,
+  "error": {
+    "statusCode": "400"
+  }
+}
+```
+
+**404 Not Found** (삭제와 동일하게 권한 없음 포함)
+
+```json
+{
+  "success": false,
+  "message": "요청한 리소스가 존재하지 않습니다.",
+  "data": null,
+  "error": {
+    "statusCode": "404"
+  }
+}
+```
 
 -----
 
@@ -448,43 +543,28 @@
 
 `GET` `/posts/:postId/comments`
 
-게시물 상세 조회 시 함께 요청되어야 하는 API입니다.
-
 ### 요청 (Request)
 
-#### Headers
-
-없음 (공개 API)
-
-#### Query Parameters
-
-| 파라미터     | 필수 |   타입   | 설명               |
-|:---------|:--:|:------:|:-----------------|
-| `limit`  | O  | Number | 10               |
-| `cursor` | X  | Number | 페이징 커서 (첫 요청 생략) |
+**Headers**: 없음 (공개)
 
 ### 응답 (Response)
 
 #### 성공 (200 OK)
 
+(댓글 리스트 반환)
+
+#### 실패
+
+**404 Not Found** (게시글이 없을 때)
+
 ```json
 {
-  "success": true,
-  "data": {
-    "comments": [
-      {
-        "id": 1,
-        "body": "댓글 내용",
-        "user": {
-          "id": 1,
-          "nickname": "jayoon"
-        },
-        "isAuthor": true
-      }
-    ],
-    "nextCursor": 10
-  },
-  "error": null
+  "success": false,
+  "message": "해당 게시글을 찾을 수 없습니다.",
+  "data": null,
+  "error": {
+    "statusCode": "404"
+  }
 }
 ```
 
@@ -496,51 +576,55 @@
 
 ### 요청 (Request)
 
-#### Headers
-
-| 이름       | 필수 | 설명                              |
-|:---------|:--:|:--------------------------------|
-| `Cookie` | O  | `ACCESS_TOKEN`, `REFRESH_TOKEN` |
-
-**Body**
-
-```json
-{
-  "body": "댓글 본문 내용"
-}
-```
+**Headers**: `Cookie` (Tokens)
+**Body**: `{"body": "내용"}`
 
 ### 응답 (Response)
 
 #### 성공 (200 OK)
 
-> **Note:** 유저 경험을 위해 별도의 message 없이 생성된 데이터를 반환합니다.
+(생성된 댓글 반환)
+
+#### 실패
+
+**400 Bad Request**
 
 ```json
 {
-  "success": true,
-  "data": {
-    "id": 1,
-    "body": "댓글 본문 내용",
-    "user": {
-      ...
-    },
-    "isAuthor": true
-  },
-  "error": null
+  "success": false,
+  "message": "댓글 내용을 입력해주세요.",
+  "data": null,
+  "error": {
+    "statusCode": "400"
+  }
 }
 ```
 
------
+**401 Unauthorized**
 
-## 8\. 댓글 수정 / 삭제
+```json
+{
+  "success": false,
+  "message": "로그인이 필요합니다.",
+  "data": null,
+  "error": {
+    "statusCode": "401"
+  }
+}
+```
 
-- **수정:** `PATCH` `/posts/:postId/comments/:commentId`
-- **삭제:** `DELETE` `/posts/:postId/comments/:commentId`
+**404 Not Found** (게시글 없음)
 
-**Headers**: `Cookie` (`ACCESS_TOKEN`, `REFRESH_TOKEN`)
-
-(상세 명세는 게시글 수정/삭제와 유사하므로 생략, JSON 포맷 유지)
+```json
+{
+  "success": false,
+  "message": "요청한 리소스가 존재하지 않습니다.",
+  "data": null,
+  "error": {
+    "statusCode": "404"
+  }
+}
+```
 
 -----
 
@@ -552,29 +636,14 @@
 
 ### 요청 (Request)
 
-#### Headers
-
-없음
-
-#### Body
-
-```json
-{
-  "email": "test@startupcode.kr",
-  "password": "test1234"
-}
-```
+**Headers**: 없음
+**Body**: `email`, `password`
 
 ### 응답 (Response)
 
 #### 성공 (200 OK)
 
-**Headers**
-
-- `Set-Cookie`: `ACCESS_TOKEN` (HttpOnly, Path=/)
-- `Set-Cookie`: `REFRESH_TOKEN` (HttpOnly, Path=/api/auth/refresh)
-
-**Body** (유저 정보 반환)
+**Headers**: `Set-Cookie` (Tokens)
 
 ```json
 {
@@ -582,8 +651,7 @@
   "message": "로그인 성공",
   "data": {
     "userId": 1,
-    "email": "...",
-    "nickname": "..."
+    ...
   },
   "error": null
 }
@@ -591,7 +659,31 @@
 
 #### 실패
 
-- **401**: 아이디 또는 비밀번호 불일치
+**400 Bad Request**
+
+```json
+{
+  "success": false,
+  "message": "잘못된 형식입니다.",
+  "data": null,
+  "error": {
+    "statusCode": "400"
+  }
+}
+```
+
+**401 Unauthorized**
+
+```json
+{
+  "success": false,
+  "message": "아이디 또는 비밀번호가 잘못 되었습니다.",
+  "data": null,
+  "error": {
+    "statusCode": "401"
+  }
+}
+```
 
 -----
 
@@ -601,23 +693,26 @@
 
 ### 요청 (Request)
 
-#### Headers
-
-| 이름       | 필수 | 설명                              |
-|:---------|:--:|:--------------------------------|
-| `Cookie` | O  | `ACCESS_TOKEN`, `REFRESH_TOKEN` |
+**Headers**: `Cookie` (Tokens)
 
 ### 응답 (Response)
 
 #### 성공 (200 OK)
 
-**Headers**: `Set-Cookie` (Max-Age=0, 즉시 만료 처리)
+**Headers**: `Set-Cookie` (Max-Age=0)
+
+#### 실패
+
+**401 Unauthorized**
 
 ```json
 {
-  "success": true,
+  "success": false,
+  "message": "이미 로그아웃 되었거나 잘못된 토큰입니다.",
   "data": null,
-  "error": null
+  "error": {
+    "statusCode": "401"
+  }
 }
 ```
 
@@ -627,45 +722,45 @@
 
 `POST` `/auth/refresh`
 
-> **Dev Note:**
-> `POST /auth/access-token` vs `POST /auth/refresh` 중 고민하였으나, 인증 정보를 독립된 도메인으로 보고자 `/auth` 리소스를 사용했습니다.
->
->   - **특이사항:** 인가(JWT) 불필요. 오직 `REFRESH_TOKEN` 쿠키만 확인합니다.
-
 ### 요청 (Request)
 
-#### Headers
-
-| 이름       | 필수 | 설명              |
-|:---------|:--:|:----------------|
-| `Cookie` | O  | `REFRESH_TOKEN` |
+**Headers**: `Cookie` (`REFRESH_TOKEN` 필수)
 
 ### 응답 (Response)
 
 #### 성공 (200 OK)
 
-새로운 `ACCESS_TOKEN`이 쿠키로 설정됩니다.
+**Headers**: New `ACCESS_TOKEN` Cookie
 
-#### 실패 (401 Unauthorized)
+#### 실패
 
-Refresh Token 만료 또는 유효하지 않음.
+**401 Unauthorized** (리프레시 토큰 만료/조작)
 
-> **Action:** 모든 토큰 쿠키를 삭제하고 로그인 페이지로 리다이렉트 해야 합니다.
+> **Action:** 이 응답을 받으면 프론트엔드는 모든 쿠키를 삭제하고 로그인 페이지로 이동해야 합니다.
+
+```json
+{
+  "success": false,
+  "message": "인증 정보가 만료되었습니다. 다시 로그인해주세요.",
+  "data": null,
+  "error": {
+    "statusCode": "401"
+  }
+}
+```
 
 -----
 
 # Images
 
-## 1\. 이미지 업로드 (서버 저장)
+## 1\. 이미지 업로드
 
 `POST` `/images`
-
-API Gateway + Lambda를 통해 별도 저장소에 저장됩니다. (회원가입 등 인증 전 사용 가능하므로 인증 헤더 불필요)
 
 ### 요청 (Request)
 
 **Headers**: 없음
-**Query Parameters**: `path` (저장 경로)
+**Query**: `path`
 
 ### 응답 (Response)
 
@@ -674,30 +769,35 @@ API Gateway + Lambda를 통해 별도 저장소에 저장됩니다. (회원가�
 ```json
 {
   "success": true,
-  "data": "저장된 이미지 URL 또는 Content",
+  "data": "https://cdn.your-domain.com/path/image.jpg",
   "error": null
 }
 ```
 
-## 2\. Pre-signed URL 조회 (Deprecated)
+#### 실패
 
-`GET` `/images/pre-signed-url`
-
-> **Status:** 현재 변경되어 사용하지 않음 (참고용)
-
-### 요청 (Request)
-
-**Query Params**: `filename`, `content-type`
-
-### 응답 (Response)
+**400 Bad Request** (파일 없음/형식 오류)
 
 ```json
 {
-  "success": true,
-  "data": {
-    "preSignedUrl": "https://s3-bucket-url...",
-    "profileImageUrl": "https://cdn-url..."
-  },
-  "error": null
+  "success": false,
+  "message": "이미지 파일만 업로드 가능합니다.",
+  "data": null,
+  "error": {
+    "statusCode": "400"
+  }
+}
+```
+
+**500 Internal Server Error** (업로드 실패)
+
+```json
+{
+  "success": false,
+  "message": "이미지 업로드 중 오류가 발생했습니다.",
+  "data": null,
+  "error": {
+    "statusCode": "500"
+  }
 }
 ```
