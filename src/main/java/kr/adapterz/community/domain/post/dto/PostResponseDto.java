@@ -3,6 +3,7 @@ package kr.adapterz.community.domain.post.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 import kr.adapterz.community.domain.post.entity.Post;
+import kr.adapterz.community.domain.user.entity.User;
 import lombok.Builder;
 
 /**
@@ -27,14 +28,17 @@ public record PostResponseDto(
      */
     public record UserResponse(
             Long id,
+            String profileImageUrl,
             String nickname
     ) {
-        public static UserResponse of(Long id, String nickname) {
-            return new UserResponse(id, nickname);
+        public static UserResponse of(Long id, String profileImageUrl, String nickname) {
+            return new UserResponse(id, profileImageUrl, nickname);
         }
     }
 
-    public static PostResponseDto of(Post post, List<PostImageCreateDto> images, boolean isAuthor, boolean isLiked) {
+    public static PostResponseDto of(Post post, List<PostImageCreateDto> images, boolean isAuthor,
+                                     boolean isLiked) {
+        User user = post.getUser();
         return PostResponseDto.builder()
                 .id(post.getId())
                 .title(post.getTitle())
@@ -43,7 +47,7 @@ public record PostResponseDto(
                 .commentCount(post.getCommentCount())
                 .viewCount(post.getViewCount())
                 .imageUrls(images)
-                .user(UserResponse.of(post.getUser().getId(), post.getUser().getNickname()))
+                .user(UserResponse.of(user.getId(), user.getProfileImageUrl(), user.getNickname()))
                 .createdAt(post.getCreatedAt())
                 .isAuthor(isAuthor)
                 .isLiked(isLiked)

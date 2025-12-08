@@ -701,6 +701,7 @@ postId: Number, 1
     "createdAt": "2025-10-13T07:45:43Z",
     "user": {
       "id": 1,
+      "profileImageUrl": "https://your-cdn.com/images/profile/unique-file-name.jpg",
       "nickname": "jayoon"
     },
     "isAuthor": true,
@@ -1184,6 +1185,7 @@ totalCount는 해당 게시글의 전체 댓글 개수입니다.
         "createdAt": "1997-01-01T00:00:00.000Z",
         "user": {
           "id": 1,
+          "profileImageUrl": "https://your-cdn.com/images/profile/unique-file-name.jpg",
           "nickname": "jay"
         },
         "isAuthor": false
@@ -1195,6 +1197,7 @@ totalCount는 해당 게시글의 전체 댓글 개수입니다.
         "createdAt": "1997-01-01T00:00:00.000Z",
         "user": {
           "id": 1,
+          "profileImageUrl": "https://your-cdn.com/images/profile/unique-file-name.jpg",
           "nickname": "jayoon"
         },
         "isAuthor": true

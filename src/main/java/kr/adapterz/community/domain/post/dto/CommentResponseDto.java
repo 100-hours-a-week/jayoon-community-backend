@@ -15,10 +15,11 @@ public record CommentResponseDto(
 ) {
     public record UserDto(
             Long id,
+            String profileImageUrl,
             String nickname
     ) {
         public static UserDto from(User user) {
-            return new UserDto(user.getId(), user.getNickname());
+            return new UserDto(user.getId(), user.getProfileImageUrl(), user.getNickname());
         }
     }
 
