@@ -39,8 +39,11 @@ public class UserController {
      */
     @PostMapping
     public ResponseEntity<ApiResponseDto<UserResponseDto>> createUser(
-            @Valid @RequestBody UserCreateRequestDto request) {
-        UserResponseDto newUser = userService.signup(request);
+            @Valid @RequestBody UserCreateRequestDto dto,
+            HttpServletRequest request,
+            HttpServletResponse response) {
+        UserResponseDto newUser = userService.signup(dto);
+        authManager.login(newUser.userId(), request, response);
         ApiResponseDto<UserResponseDto> responseBody = ApiResponseDto.success(newUser,
                 USER_CREATE_SUCCESS.getMessage());
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
