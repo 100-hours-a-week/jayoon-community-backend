@@ -1,72 +1,141 @@
 # 가이드윤의 바른 생활 Community service
 
-## 사이트: [가이드윤의 바른생활](https://guidey.site)
+### 사이트: [가이드윤의 바른 생활](https://guidey.site)
 
-## API 명세서
+## Back-end 소개
 
-- [x] [API 명세서](https://github.com/100-hours-a-week/jayoon-til/blob/main/community-docs/api-specification.md)
+- 규칙적인 생활을 위한 일상 공유 커뮤니티 서비스 '가이드윤의 바른 생활'입니다.
+- `spring`으로 서버를 구현하고, `MySQL`로 db를 사용했습니다.
+- 개발은 초기 프로젝트 설정부터, db 생성 및 연결, 서버 연결, 프론트엔드 연결까지 `직접 구현`했습니다.
+- RCM(Routes-Controllers-Model) 패턴으로 구현했습니다.
 
-## ERD
+### 개발 인원 및 기간
 
-- [x] [ERDCloud](https://www.erdcloud.com/d/GRWCfnyCjSsbtM4AD)
+- 개발기간 :  2025-09-15 ~ 2025-12-07
+- 개발 인원 : 프론트엔드/백엔드/인프라 1명 (본인)
 
-## 화면설계
+### 사용 기술 및 tools
 
-- [x] [Figma - 아무말 대잔치](https://www.figma.com/design/uzVLRNRe4ocdIjr7xegIuf/%EA%B5%90%EC%9E%AC%EC%9A%A9-%EC%BB%A4%EB%AE%A4%EB%8B%88%ED%8B%B0-%EC%9B%B9?node-id=0-1&t=BznhwcNMxzALRCZr-1)
-    - 외부 비공개 자료입니다.
-    - 권한이 있는 사람만 접근 가능합니다.
+- Spring
+- MySQL 8.4 LTS
 
-## Convention
+### Front-end
+
+- <a href="https://github.com/brixxt27/jayoon-community-frontend">Front-end Github</a>
+
+### 서비스 시연 영상
+
+- [Youtube](https://youtu.be/vhrRLNeYxgQ)
+
+### Convention
 
 - [x] [개인 Notion](https://jayoon.notion.site/Convention-2a32ff1a1acc80a6bca6c0d0d70e57b8?source=copy_link)
 
-## 진행 상황
+### API 명세서
 
-### API 개발(리소스 별 분류)
+- [x] [API 명세서](https://github.com/100-hours-a-week/jayoon-til/blob/main/community-docs/api-specification.md)
 
+## 서버 설계
+
+### 도메인 구조
+| 구분 | Route (URI 경로) | Controller (요청 처리) | Model (데이터 구조) |
+|:-----|:-----------------|:-----------------------|:--------------------|
+| **유저** | `/users/**` | `UserController` | `User` (Entity), `UserResponseDto`, `UserCreateRequestDto` 등 |
+| **게시글** | `/posts/**` | `PostController` | `Post` (Entity), `PostResponseDto`, `PostCreateRequestDto` 등 |
+| **댓글** | `/posts/{postId}/comments/**` | `PostController` (일반적으로 게시글 **`Controller`** 내에서 처리) | `PostComment` (Entity), `CommentResponseDto`, `CommentCreateRequestDto` 등 |
+| **인증** | `/auth/**` | `AuthController` | `UserAuth` (Entity), `LoginRequestDto`, `LoginResponseDto` 등 |
+| **이미지** | `/images/**` | `ImageController` | `PostImage` (Entity), `PreSignedUrlResponse` (DTO) |
+| **헬스체크** | `/health**` | `Health` | - |
 ---
 
-#### users
+### 공통 요소 구조
 
-- [x] (인증x)POST /users 회원가입
-- [x] PATCH /users/me 회원정보 수정
-    - 프로필 이미지, 닉네임, 비밀번호를 수정할 수 있습니다.
-- [x] DELETE /users/me 회원 탈퇴
+| 패키지 | 주요 역할 | 주요 클래스 |
+|:---|:---|:---|
+| `common/config` | 애플리케이션 전역 설정 관리 | `SecurityConfig`, `QuerydslConfig` |
+| `common/exception` | 전역 예외 처리 및 공통 예외 정의 | `GlobalExceptionHandler`, `BaseCustomException` |
+| `common/security` | 인증(Authentication) 및 인가(Authorization) 담당 | `AuthenticationFilter`, `JwtManager`, `AuthManager` |
+| `common/response` | 모든 API 응답의 통일된 형식 정의 | `ApiResponseDto` |
+| `common/web` | `@LoginUser` 등 커스텀 어노테이션 및 Argument Resolver 정의 | `LoginUserArgumentResolver` |
 
-#### posts
+<br/>
 
-- [x] POST /posts
-- [x] (인증x)GET /posts 게시글 목록 조회
-- [x] (인증x)GET /posts/:postId 게시글 상세 조회
-    - [x] 조회수 관련 로직을 상세 조회에서 진행합니다.
-- [x] DELETE /posts/:postId 게시글 삭제
-- [x] PATCH /posts/:postId 게시글 수정
+### 구현 기능
 
-- [x] POST /posts/:postId/comments/ 댓글 생성
-- [x] (인증x)GET /posts/:postId/comments 댓글 목록 조회
-    - 댓글을 단일 조회가 없습니다.
-- [x] PUT /posts/:postId/comments/:commentId 댓글 수정
-- [x] DELETE /posts/:postId/comments/:commentId 댓글 삭제
+#### Users
 
-- [x] POST /posts/:postId/likes 좋아요 생성
-- [x] DELETE /posts/:postId/likes 좋아요 삭제.
+```
+- 프로필 이미지는 S3에 저장하고, DB에는 이미지 URL 저장
+- 유저 CRUD 기능 구현
+- 회원가입, 로그인, 비밀번호 변경 시 bcrypt로 비밀번호 암호화하여 처리
+- JWT 및 세션을 통해 유저 정보 저장, 로그아웃/회원탈퇴 시 세션 destroy
+- Filter를 통해 인증 정보가 필요한 유저의 인증/인가 처리
+```
 
-#### auth
+#### Posts
 
-users와 다르게 인증 정보를 새롭게 생성 및 삭제를 하므로 유저와 관심사가 다르다고 생각했습니다. 때문에 분리하였습니다.
+```
+- 인피니티 스크롤을 위한 커서 기반 페이지네이션 구현
+- 게시물 이미지는 S3에 저장하고, DB에는 이미지 URL 저장
+- 게시글 CRUD 기능 구현
+- 세션을 이용한 게시물 조회수 증가
+- 유저 별 게시물 좋아요 추가 및 삭제
+```
 
-- [x] (인증x)POST /auth 로그인
-- [x] DELETE /auth 로그아웃
+#### Comments
 
-#### images
+```
+- 댓글 CRUD 기능 구현
+```
 
-API Gateway와 Lambda를 통해 개발 되었습니다. ALB를 통해 /images에 대한 요청은 spring 서버로 들어오지 않습니다.
+<br/>
 
-- [x] (인증x)POST /images 이미지 추가
+## 데이터베이스 설계
 
-### 인가
+### 요구사항 분석
 
----
+`유저 관리`
 
-- [x] 세션, 쿠키
-- [x] JWT
+- 사용자는 이메일, 프로필 이미지, 비밀번호, 닉네임 정보를 포함하는 유저 관리
+- 각 유저는 고유한 식별자를 가지고 있으며, 이메일과 닉네임은 유니크하게 설정하여 중복 방지
+
+`게시글 관리`
+
+- 사용자가 제목, 내용, 이미지, 작성일시 등의 정보를 포함하는 게시글 관리
+- 게시글은 작성자를 참조하여 관계를 설정
+
+`댓글 관리`
+
+- 사용자가 내용, 작성자, 작성일시 등의 정보를 포함하는 댓글 관리
+- 댓글은 어떤 게시글에 속해 있는지 나타내는 참조 포함
+
+### 모델링
+
+`E-R Diagram`  
+요구사항을 기반으로 모델링한 E-R Diagram입니다.  
+- [x] [ERDCloud](https://www.erdcloud.com/d/GRWCfnyCjSsbtM4AD)
+
+<br/>
+
+## 트러블 슈팅
+
+추후 작성..
+
+<br/>
+
+## 프로젝트 후기
+
+저는 기존에 실제로 가이드윤이라는 닉네임으로 약 50명 정도 되는 유저들과 비슷한 서비스를 운영해본 경험이 있습니다.
+[규칙적으로 생활하기](https://www.band.us/band/83478919/post)가 바로 그 서비스입니다.
+![img.png](docs/img.png)
+과거에는 개발을 할줄 몰라 '밴드'라는 플랫폼을 이용하여 라는 이름으로 운영했습니다.
+COVID-19가 유행하던 시기는 모두가 힘들고 어려웠지만 이때 단순히 규칙적인 생활만 해도 저는 긍정적인 효과를 보게 되었습니다.
+저는 이를 단순히 생각만 갖고 플랫폼을 이용하여 사람들과 나눴는데 이제는 제가 직접 서비스를 구축하여 제가 만든 시스템에서 사람들과 소통할 수 있게 되었습니다.
+이번 개인 프로젝트는 다음 스탭을 밟기 위한 튜토리얼이라 생각합니다.
+앞으로 있을 해커톤과 팀프로젝트 때 지금까지의 지식을 통해 더 성장하며 단단해지겠습니다.
+
+
+<br/>
+<br/>
+<br/>
+
